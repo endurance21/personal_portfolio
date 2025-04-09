@@ -15,14 +15,14 @@ const Index = () => {
     <div className="min-h-screen relative">
       <ThreeFireflies 
         count={300}
-        size={2.5}
+        size={5}
         colors={['#4F46E5', '#F8FAFC', '#38BDF8']} 
-        speed={0.1}
+        speed={0.2}
         minDistance={10}
         maxDistance={40}
-        sphereRadius={300}
+        sphereRadius={250}
         cameraDistortion={true}
-        distortionIntensity={0.03}
+        distortionIntensity={0.02}
       />
       <Navbar />
       <HeroSection />

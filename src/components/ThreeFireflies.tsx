@@ -30,11 +30,13 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const firefliesRef = useRef<THREE.Points | null>(null);
+  const pointsRef = useRef<THREE.Points | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
   const targetCameraPositionRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, sphereRadius));
   const lastMouseMoveTime = useRef<number>(0);
+  const positionsRef = useRef<Float32Array | null>(null);
+  const velocitiesRef = useRef<Float32Array | null>(null);
 
   const handleMouseMove = (event: MouseEvent) => {
     if (cameraDistortion) {
@@ -54,7 +56,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       0.1,
       2000
     );
-    camera.position.z = sphereRadius; // Closer camera position
+    camera.position.z = sphereRadius; // Position camera
     targetCameraPositionRef.current = new THREE.Vector3(0, 0, sphereRadius);
 
     const renderer = new THREE.WebGLRenderer({
@@ -74,80 +76,57 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     const positions = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
     const colorsArray = new Float32Array(count * 3);
-    const colorPalette = [new THREE.Color('#4F46E5'), new THREE.Color('#F8FAFC'), new THREE.Color('#38BDF8')];
+    const sizes = new Float32Array(count);
+    
+    const colorPalette = colors.map(color => new THREE.Color(color));
 
+    // Initialize firefly properties
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       
       // Position fireflies more between the camera and the viewport
       positions[i3] = (Math.random() - 0.5) * window.innerWidth;
       positions[i3 + 1] = (Math.random() - 0.5) * window.innerHeight;
-      positions[i3 + 2] = (Math.random() - 0.5) * (sphereRadius * 0.8); // Reduced z-depth to bring them closer
-
+      positions[i3 + 2] = (Math.random() - 0.5) * (sphereRadius * 0.6); // Reduced z-depth
+      
       // Random velocities
       velocities[i3] = (Math.random() - 0.5) * speed;
       velocities[i3 + 1] = (Math.random() - 0.5) * speed;
       velocities[i3 + 2] = (Math.random() - 0.5) * speed;
-
+      
+      // Random size
+      sizes[i] = size * (0.5 + Math.random() * 0.5);
+      
       // Random color from palette
       const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
       colorsArray[i3] = color.r;
       colorsArray[i3 + 1] = color.g;
       colorsArray[i3 + 2] = color.b;
     }
+    
+    // Store references for animation
+    positionsRef.current = positions;
+    velocitiesRef.current = velocities;
 
-    // const geometry = new THREE.BufferGeometry();
-    // geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    // geometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+    // Create points geometry
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
+    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-    // const material = new THREE.PointsMaterial({
-    //   size: size,
-    //   vertexColors: true,
-    //   transparent: true,
-    //   opacity: 0.8,
-    //   sizeAttenuation: true
-    // });
+    // Create shader material for better-looking points
+    const material = new THREE.PointsMaterial({
+      size: 1,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.8,
+      sizeAttenuation: true
+    });
 
-    // const points = new THREE.Points(geometry, material);
-
-
-    // Number of instances
-const count2 = positions.length / 3; // Assuming positions is a Float32Array with x, y, z for each instance
-
-// Create sphere geometry and material
-const sphereGeometry = new THREE.SphereGeometry(1, 16, 16);
-const material = new THREE.MeshBasicMaterial({ vertexColors: true });
-
-// Create InstancedMesh
-const instancedMesh = new THREE.InstancedMesh(sphereGeometry, material, count2);
-
-// Temporary objects for setting instance transformations
-const dummy = new THREE.Object3D();
-const color = new THREE.Color();
-
-for (let i = 0; i < count2; i++) {
-  // Set position
-  dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
-
-  // Set scale if needed
-  dummy.scale.setScalar(size); // 'size' is the desired scale factor
-
-  // Apply transformation matrix to the instance
-  dummy.updateMatrix();
-  instancedMesh.setMatrixAt(i, dummy.matrix);
-
-  // Set color if needed
-  color.setRGB(colors[i * 3], colors[i * 3 + 1], colors[i * 3 + 2]);
-  instancedMesh.setColorAt(i, color);
-}
-
-// Ensure the color attribute is updated
-instancedMesh.instanceColor.needsUpdate = true;
-
-// Add the instanced mesh to the scene
-scene.add(instancedMesh);
-
-    firefliesRef.current = instancedMesh;
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+    
+    pointsRef.current = points;
 
     // Store references
     sceneRef.current = scene;
@@ -156,7 +135,11 @@ scene.add(instancedMesh);
 
     // Animation function
     const animate = () => {
-      const positions = (firefliesRef.current?.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array;
+      if (!pointsRef.current || !positionsRef.current || !velocitiesRef.current) return;
+      
+      const positions = positionsRef.current;
+      const velocities = velocitiesRef.current;
+      const positionAttribute = pointsRef.current.geometry.attributes.position;
       
       for (let i = 0; i < count; i++) {
         const i3 = i * 3;
@@ -165,12 +148,12 @@ scene.add(instancedMesh);
         positions[i3] += velocities[i3];
         positions[i3 + 1] += velocities[i3 + 1];
         positions[i3 + 2] += velocities[i3 + 2];
-
+        
         // Bounce off boundaries with tighter bounds to keep fireflies visible
-        const boundsX = window.innerWidth * 0.7;
-        const boundsY = window.innerHeight * 0.7;
-        const boundsZ = sphereRadius * 0.5;
-
+        const boundsX = window.innerWidth * 0.5;
+        const boundsY = window.innerHeight * 0.5;
+        const boundsZ = sphereRadius * 0.4;
+        
         if (Math.abs(positions[i3]) > boundsX) {
           positions[i3] = Math.sign(positions[i3]) * boundsX;
           velocities[i3] *= -1;
@@ -184,28 +167,29 @@ scene.add(instancedMesh);
           velocities[i3 + 2] *= -1;
         }
       }
-
-      firefliesRef.current!.geometry.attributes.position.needsUpdate = true;
-
+      
+      // Update buffer attribute
+      positionAttribute.needsUpdate = true;
+      
       if (cameraDistortion && cameraRef.current) {
         const timeSinceLastMouseMove = (Date.now() - lastMouseMoveTime.current) / 1000;
         const activeDistortionIntensity = distortionIntensity * Math.max(0, 1 - (timeSinceLastMouseMove - 2) / 3);
-
+        
         camera.position.x += (mouseRef.current.x * 20 - camera.position.x) * activeDistortionIntensity;
         camera.position.y += (mouseRef.current.y * 20 - camera.position.y) * activeDistortionIntensity;
         camera.lookAt(0, 0, 0);
       }
-
+      
       renderer.render(scene, camera);
       animationFrameRef.current = requestAnimationFrame(animate);
     };
-
+    
     animate();
-
+    
     if (cameraDistortion) {
       window.addEventListener('mousemove', handleMouseMove);
     }
-
+    
     const handleResize = () => {
       if (!cameraRef.current || !rendererRef.current) return;
       
@@ -225,10 +209,10 @@ scene.add(instancedMesh);
       window.removeEventListener('mousemove', handleMouseMove);
       
       // Clean up Three.js objects
-      if (firefliesRef.current) {
-        scene.remove(firefliesRef.current);
-        firefliesRef.current.geometry.dispose();
-        (firefliesRef.current.material as THREE.Material).dispose();
+      if (pointsRef.current) {
+        scene.remove(pointsRef.current);
+        pointsRef.current.geometry.dispose();
+        (pointsRef.current.material as THREE.Material).dispose();
       }
       
       if (rendererRef.current) {
