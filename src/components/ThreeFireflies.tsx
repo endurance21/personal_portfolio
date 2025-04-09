@@ -15,7 +15,7 @@ interface ThreeFirefliesProps {
 
 const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   count = 100,
-  size = 10,
+  size = 7,
   colors = ['#4F46E5', '#F8FAFC', '#38BDF8'], // Professional indigo, white, sky blue
   enabled = true,
   speed = 0.6,
@@ -182,8 +182,8 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         targetCameraPositionRef.current.y = mouseRef.current.y * 10;
         
         // Smoothly interpolate current camera position towards target position
-        cameraRef.current.position.x -= (targetCameraPositionRef.current.x - cameraRef.current.position.x) * distortionIntensity;
-        cameraRef.current.position.y -= (targetCameraPositionRef.current.y - cameraRef.current.position.y) * distortionIntensity;
+        cameraRef.current.position.x += (targetCameraPositionRef.current.x - cameraRef.current.position.x) * distortionIntensity;
+        cameraRef.current.position.y += (targetCameraPositionRef.current.y - cameraRef.current.position.y) * distortionIntensity;
         
         // Keep camera looking at the center of the scene
         cameraRef.current.lookAt(0, 0, 0);
