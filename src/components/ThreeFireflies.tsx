@@ -16,8 +16,8 @@ interface ThreeFirefliesProps {
 // Helper function to create a circular texture
 const createCircleTexture = () => {
   const canvas = document.createElement('canvas');
-  canvas.width = 200;
-  canvas.height = 200;
+  canvas.width = 64;
+  canvas.height = 64;
   
   const context = canvas.getContext('2d');
   if (!context) return null;
@@ -29,7 +29,7 @@ const createCircleTexture = () => {
   gradient.addColorStop(1, 'rgba(255, 255, 255, 0)');
   
   context.fillStyle = gradient;
-  context.fillRect(0, 0, 200, 200);
+  context.fillRect(0, 0, 64, 64);
   
   return new THREE.CanvasTexture(canvas);
 };
