@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, Sparkles } from 'lucide-react';
 
 interface ProjectProps {
   title: string;
@@ -13,26 +13,31 @@ interface ProjectProps {
 }
 
 const ProjectCard = ({ title, description, iconUrl, tags, link }: ProjectProps) => (
-  <Card className="ghibli-card h-full overflow-hidden group hover:scale-[1.02] transition-all duration-300">
-    <CardContent className="p-6">
+  <Card className="magic-card h-full overflow-hidden group hover:scale-[1.02] transition-all duration-300">
+    <CardContent className="p-6 relative z-10">
       <div className="flex items-start gap-4">
-        <div className="w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden">
+        <div className="w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden bg-magic-navy/50 border border-magic-violet/30">
           <img src={iconUrl} alt={title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
         </div>
         
         <div className="flex-grow">
           <div className="flex items-center justify-between">
-            <h3 className="font-bold text-xl">{title}</h3>
+            <h3 className="font-bold text-xl text-magic-teal group-hover:text-magic-starlight transition-colors">
+              {title}
+              <span className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                <Sparkles className="h-4 w-4 text-magic-spark" />
+              </span>
+            </h3>
             {link && (
-              <a href={link} target="_blank" rel="noopener noreferrer" className="text-ghibli-blue hover:text-ghibli-darkgreen transition-colors">
+              <a href={link} target="_blank" rel="noopener noreferrer" className="text-magic-violet hover:text-magic-teal transition-colors">
                 <ExternalLink className="h-5 w-5" />
               </a>
             )}
           </div>
-          <p className="text-ghibli-darkbrown/80 mt-2 mb-4">{description}</p>
+          <p className="text-magic-twilight mt-2 mb-4">{description}</p>
           <div className="flex flex-wrap gap-2">
             {tags.map((tag, index) => (
-              <Badge key={index} className="bg-ghibli-cream text-ghibli-darkbrown hover:bg-ghibli-yellow/50 transition-colors">
+              <Badge key={index} className="bg-magic-deepPurple text-magic-twilight hover:bg-magic-violet/30 transition-colors border border-magic-violet/20">
                 {tag}
               </Badge>
             ))}
@@ -90,14 +95,15 @@ const Projects = () => {
   ];
 
   return (
-    <section className="py-24 px-4 bg-ghibli-skyblue/10">
-      <div className="container mx-auto max-w-6xl">
+    <section className="py-24 px-4 bg-magic-deepPurple/20 relative backdrop-blur-sm">
+      <div className="absolute inset-0 bg-shimmer bg-200% opacity-10 animate-shimmer"></div>
+      <div className="container mx-auto max-w-6xl relative z-10">
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">Projects</h2>
-          <p className="text-ghibli-darkbrown/80 max-w-2xl mx-auto">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 cosmic-glow">Projects</h2>
+          <p className="text-magic-twilight max-w-2xl mx-auto">
             Each project is a journey into a unique world, built with care and technical excellence.
           </p>
-          <div className="w-24 h-1 bg-ghibli-green mx-auto rounded-full mt-4"></div>
+          <div className="w-24 h-1 bg-magic-teal mx-auto rounded-full mt-4"></div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

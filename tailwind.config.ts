@@ -68,6 +68,22 @@ export default {
 					cream: '#F8F2E2',
 					darkbrown: '#624C3C'
 				},
+				magic: {
+					purple: '#7E69AB',
+					deepPurple: '#4A3A65',
+					violet: '#9B87F5',
+					teal: '#3ECBB2',
+					deepTeal: '#1A8D7B',
+					navy: '#1A1F2C',
+					gold: '#F2CF63',
+					starlight: '#F5EFD9',
+					midnight: '#0E1326',
+					twilight: '#D6BCFA',
+					dream: '#E5DEFF',
+					spark: '#FFD166',
+					enchant: '#845EC2',
+					dawn: '#FEC6A1'
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -109,6 +125,14 @@ export default {
 				sway: {
 					'0%, 100%': { transform: 'rotate(-2deg)' },
 					'50%': { transform: 'rotate(2deg)' }
+				},
+				twinkle: {
+					'0%, 100%': { opacity: '1' },
+					'50%': { opacity: '0.5' }
+				},
+				shimmer: {
+					'0%': { backgroundPosition: '-200% 0' },
+					'100%': { backgroundPosition: '200% 0' }
 				}
 			},
 			animation: {
@@ -116,15 +140,25 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 6s ease-in-out infinite',
 				'breathe': 'breathe 8s ease-in-out infinite',
-				'sway': 'sway 6s ease-in-out infinite'
+				'sway': 'sway 6s ease-in-out infinite',
+				'twinkle': 'twinkle 3s ease-in-out infinite',
+				'shimmer': 'shimmer 8s ease-in-out infinite'
 			},
 			boxShadow: {
 				'ghibli': '0 8px 30px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.05)',
-				'ghibli-hover': '0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08)'
+				'ghibli-hover': '0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08)',
+				'magic': '0 8px 30px rgba(123, 104, 238, 0.2), 0 2px 8px rgba(123, 104, 238, 0.1)',
+				'magic-hover': '0 12px 40px rgba(123, 104, 238, 0.3), 0 4px 12px rgba(123, 104, 238, 0.15)',
+				'cosmic': '0 8px 30px rgba(62, 203, 178, 0.2), 0 2px 8px rgba(62, 203, 178, 0.1)'
 			},
 			backgroundImage: {
 				'ghibli-gradient': 'linear-gradient(to bottom, #F8F2E2, #E5F2F2)',
-				'ghibli-card': 'linear-gradient(to bottom right, #FFFFFF, #F8F6F0)'
+				'ghibli-card': 'linear-gradient(to bottom right, #FFFFFF, #F8F6F0)',
+				'magic-gradient': 'linear-gradient(to bottom, #1A1F2C, #4A3A65)',
+				'cosmic-gradient': 'linear-gradient(135deg, #0E1326, #3A275F)',
+				'starlight-gradient': 'linear-gradient(to bottom right, #D6BCFA, #E5DEFF)',
+				'shimmer': 'linear-gradient(to right, transparent 0%, rgba(155, 135, 245, 0.2) 50%, transparent 100%)',
+				'twilight-card': 'linear-gradient(to bottom right, rgba(255, 255, 255, 0.1), rgba(155, 135, 245, 0.05))'
 			}
 		}
 	},
