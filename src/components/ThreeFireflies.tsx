@@ -15,13 +15,13 @@ interface ThreeFirefliesProps {
 }
 
 const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
-  count = 200,
-  size = 20,
+  count = 400,
+  size = 30,
   colors = ['#4F46E5', '#F8FAFC', '#38BDF8'],
   enabled = true,
-  speed = 0.15,
-  minDistance = 10,
-  maxDistance = 40,
+  speed = 0.3,
+  minDistance = 50,
+  maxDistance = 100,
   sphereRadius = 300,
   cameraDistortion = true,
   distortionIntensity = 0.03,
