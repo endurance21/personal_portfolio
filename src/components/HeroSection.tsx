@@ -1,8 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle, Sparkles, ExternalLink, LampCeiling } from 'lucide-react';
-import Fireflies from "@/components/Fireflies";
+import ThreeFireflies from "@/components/ThreeFireflies";
 
 const roles = [
   {
@@ -43,9 +42,6 @@ const HeroSection = () => {
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-700 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
         <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-400 rounded-full blur-3xl opacity-40"></div>
       </div>
-      
-      {/* Enhanced Fireflies component with professional colors */}
-      <Fireflies count={70} colors={['#4F46E5', '#F8FAFC', '#38BDF8']} />
       
       <div className="container max-w-5xl mx-auto z-10">
         <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
