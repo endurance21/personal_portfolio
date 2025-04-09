@@ -156,7 +156,7 @@ const Fireflies: React.FC<FireflyProps> = ({
       });
       
       // Continue animation loop
-      // animationFrameRef.current = requestAnimationFrame(animateFireflies);
+      animationFrameRef.current = requestAnimationFrame(animateFireflies);
     };
     
     // Start the animation
