@@ -59,6 +59,7 @@ const Fireflies: React.FC<FireflyProps> = ({
         const y = Math.random() * containerHeight;
         
         // Random size variation for more natural feel
+        
         const fireflySize = size * (0.7 + Math.random() * 0.6);
         
         // Random opacity but always visible
@@ -121,8 +122,8 @@ const Fireflies: React.FC<FireflyProps> = ({
         let vy = parseFloat(firefly.dataset.vy || '0');
         
         // Apply small random changes to velocity (gentle wandering)
-        vx += (Math.random() - 0.5) * 0.03;
-        vy += (Math.random() - 0.5) * 0.03;
+        vx += (Math.random() - 0.5) * 0.5;
+        vy += (Math.random() - 0.5) * 0.5;
         
         // Dampen velocity for smooth, gentle movement
         vx = vx * 0.99;
