@@ -16,10 +16,12 @@ const Index = () => {
       {/* Forest night scene with Three.js fireflies and camera distortion */}
       <ThreeFireflies 
         count={150} 
+        size={15} // Increased size for larger fireflies
         colors={['#4F46E5', '#F8FAFC', '#38BDF8']} 
         speed={0.15}
         minDistance={10}
         maxDistance={40}
+        sphereRadius={40} // Configurable sphere radius
         cameraDistortion={true}
         distortionIntensity={0.03}
       />

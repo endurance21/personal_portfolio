@@ -11,6 +11,7 @@ interface ThreeFirefliesProps {
   maxDistance?: number;
   cameraDistortion?: boolean;
   distortionIntensity?: number;
+  sphereRadius?: number;  // New prop for configurable sphere radius
 }
 
 // Helper function to create a circular texture
@@ -62,7 +63,7 @@ const fibonacciSpherePoints = (samples: number, radius: number) => {
 
 const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   count = 100,
-  size = 10,
+  size = 12, // Increased default size for larger fireflies
   colors = ['#4F46E5', '#F8FAFC', '#38BDF8'], // Professional indigo, white, sky blue
   enabled = true,
   speed = 0.6,
@@ -70,6 +71,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   maxDistance = 30,
   cameraDistortion = true,
   distortionIntensity = 0.05,
+  sphereRadius = 30, // Default sphere radius
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -103,8 +105,8 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       0.1, 
       1000
     );
-    camera.position.z = 30;
-    targetCameraPositionRef.current = new THREE.Vector3(0, 0, 50);
+    camera.position.z = sphereRadius * 1.5; // Adjust camera distance based on sphere radius
+    targetCameraPositionRef.current = new THREE.Vector3(0, 0, sphereRadius * 1.5);
     
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
@@ -125,7 +127,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     // Create fireflies with enhanced appearance
     const fireflyGeometry = new THREE.BufferGeometry();
     const fireflyMaterial = new THREE.PointsMaterial({
-      size: size * 0.04,
+      size: size * 0.08, // Increased size multiplier for larger fireflies
       vertexColors: true,
       transparent: true,
       blending: THREE.AdditiveBlending,
@@ -134,8 +136,8 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       alphaTest: 0.01 // Helps with rendering order
     });
 
-    // Generate positions using Fibonacci sphere distribution
-    const positions = new Float32Array(fibonacciSpherePoints(count, maxDistance));
+    // Generate positions using Fibonacci sphere distribution with configurable radius
+    const positions = new Float32Array(fibonacciSpherePoints(count, sphereRadius));
     const colorsArr = new Float32Array(count * 3);
     const scales = new Float32Array(count);
     const colorObj = new THREE.Color();
@@ -217,9 +219,9 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
             positions[iz] * positions[iz]
           );
           
-          if (distance > maxDistance || distance < minDistance) {
-            // Scale to keep within boundaries
-            const targetDistance = distance < minDistance ? minDistance : maxDistance;
+          if (distance > sphereRadius || distance < minDistance) {
+            // Scale to keep within boundaries (using configurable sphereRadius)
+            const targetDistance = distance < minDistance ? minDistance : sphereRadius;
             const scale = targetDistance / distance;
             
             positions[ix] *= scale;
@@ -299,7 +301,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         rendererRef.current.dispose();
       }
     };
-  }, [count, size, colors, enabled, speed, minDistance, maxDistance, cameraDistortion, distortionIntensity]);
+  }, [count, size, colors, enabled, speed, minDistance, maxDistance, cameraDistortion, distortionIntensity, sphereRadius]);
 
   return (
     <div 
