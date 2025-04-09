@@ -1,5 +1,7 @@
+
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ThreeFirefliesProps {
   count?: number;
@@ -37,6 +39,14 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   const lastMouseMoveTime = useRef<number>(0);
   const positionsRef = useRef<Float32Array | null>(null);
   const velocitiesRef = useRef<Float32Array | null>(null);
+  const isMobile = useIsMobile();
+
+  // Adjust parameters for mobile
+  const mobileAdjustedCount = isMobile ? Math.floor(count * 0.6) : count;
+  const mobileAdjustedSize = isMobile ? size * 0.8 : size;
+  const mobileAdjustedSpeed = isMobile ? speed * 0.8 : speed;
+  const mobileAdjustedSphereRadius = isMobile ? sphereRadius * 0.7 : sphereRadius;
+  const mobileAdjustedDistortionIntensity = isMobile ? distortionIntensity * 0.5 : distortionIntensity;
 
   const handleMouseMove = (event: MouseEvent) => {
     if (cameraDistortion) {
@@ -46,25 +56,41 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     }
   };
 
+  const handleTouchMove = (event: TouchEvent) => {
+    if (cameraDistortion && event.touches.length > 0) {
+      const touch = event.touches[0];
+      mouseRef.current.x = (touch.clientX / window.innerWidth) * 2 - 1;
+      mouseRef.current.y = -((touch.clientY / window.innerHeight) * 2 - 1);
+      lastMouseMoveTime.current = Date.now();
+    }
+  };
+
   useEffect(() => {
     if (!containerRef.current || !enabled) return;
 
+    const adjustedCount = mobileAdjustedCount;
+    const adjustedSize = mobileAdjustedSize;
+    const adjustedSpeed = mobileAdjustedSpeed;
+    const adjustedSphereRadius = mobileAdjustedSphereRadius;
+    const adjustedDistortionIntensity = mobileAdjustedDistortionIntensity;
+
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      85,
+      isMobile ? 75 : 85,
       window.innerWidth / window.innerHeight,
       0.1,
       2000
     );
-    camera.position.z = sphereRadius; // Position camera
-    targetCameraPositionRef.current = new THREE.Vector3(0, 0, sphereRadius);
+    camera.position.z = adjustedSphereRadius; // Position camera
+    targetCameraPositionRef.current = new THREE.Vector3(0, 0, adjustedSphereRadius);
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: true,
+      antialias: !isMobile, // Disable antialiasing on mobile for better performance
       alpha: true
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setClearColor(0x000000, 0);
+    renderer.setPixelRatio(isMobile ? Math.min(window.devicePixelRatio, 2) : window.devicePixelRatio);
 
     // Clean existing canvas if it exists
     while (containerRef.current.firstChild) {
@@ -73,29 +99,32 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     containerRef.current.appendChild(renderer.domElement);
 
     // Create points geometry
-    const positions = new Float32Array(count * 3);
-    const velocities = new Float32Array(count * 3);
-    const colorsArray = new Float32Array(count * 3);
-    const sizes = new Float32Array(count);
+    const positions = new Float32Array(adjustedCount * 3);
+    const velocities = new Float32Array(adjustedCount * 3);
+    const colorsArray = new Float32Array(adjustedCount * 3);
+    const sizes = new Float32Array(adjustedCount);
     
     const colorPalette = colors.map(color => new THREE.Color(color));
 
     // Initialize firefly properties
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < adjustedCount; i++) {
       const i3 = i * 3;
       
       // Position fireflies more between the camera and the viewport
-      positions[i3] = (Math.random() - 0.5) * window.innerWidth;
-      positions[i3 + 1] = (Math.random() - 0.5) * window.innerHeight;
-      positions[i3 + 2] = (Math.random() - 0.5) * (sphereRadius * 0.6); // Reduced z-depth
+      const viewWidth = window.innerWidth * 0.5;
+      const viewHeight = window.innerHeight * 0.5;
       
-      // Random velocities
-      velocities[i3] = (Math.random() - 0.5) * speed;
-      velocities[i3 + 1] = (Math.random() - 0.5) * speed;
-      velocities[i3 + 2] = (Math.random() - 0.5) * speed;
+      positions[i3] = (Math.random() - 0.5) * viewWidth;
+      positions[i3 + 1] = (Math.random() - 0.5) * viewHeight;
+      positions[i3 + 2] = (Math.random() - 0.5) * (adjustedSphereRadius * 0.5); // Reduced z-depth
       
-      // Random size
-      sizes[i] = size * (0.5 + Math.random() * 0.5);
+      // Random velocities - slower on mobile
+      velocities[i3] = (Math.random() - 0.5) * adjustedSpeed;
+      velocities[i3 + 1] = (Math.random() - 0.5) * adjustedSpeed;
+      velocities[i3 + 2] = (Math.random() - 0.5) * adjustedSpeed;
+      
+      // Random size - smaller on mobile
+      sizes[i] = adjustedSize * (0.5 + Math.random() * 0.5);
       
       // Random color from palette
       const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
@@ -141,7 +170,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       const velocities = velocitiesRef.current;
       const positionAttribute = pointsRef.current.geometry.attributes.position;
       
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < adjustedCount; i++) {
         const i3 = i * 3;
         
         // Update positions
@@ -152,7 +181,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         // Bounce off boundaries with tighter bounds to keep fireflies visible
         const boundsX = window.innerWidth * 0.5;
         const boundsY = window.innerHeight * 0.5;
-        const boundsZ = sphereRadius * 0.4;
+        const boundsZ = adjustedSphereRadius * 0.4;
         
         if (Math.abs(positions[i3]) > boundsX) {
           positions[i3] = Math.sign(positions[i3]) * boundsX;
@@ -173,7 +202,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       
       if (cameraDistortion && cameraRef.current) {
         const timeSinceLastMouseMove = (Date.now() - lastMouseMoveTime.current) / 1000;
-        const activeDistortionIntensity = distortionIntensity * Math.max(0, 1 - (timeSinceLastMouseMove - 2) / 3);
+        const activeDistortionIntensity = adjustedDistortionIntensity * Math.max(0, 1 - (timeSinceLastMouseMove - 2) / 3);
         
         camera.position.x += (mouseRef.current.x * 20 - camera.position.x) * activeDistortionIntensity;
         camera.position.y += (mouseRef.current.y * 20 - camera.position.y) * activeDistortionIntensity;
@@ -186,8 +215,10 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     
     animate();
     
+    // Add both mouse and touch event listeners
     if (cameraDistortion) {
       window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('touchmove', handleTouchMove, { passive: true });
     }
     
     const handleResize = () => {
@@ -207,6 +238,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
       
       // Clean up Three.js objects
       if (pointsRef.current) {
@@ -219,7 +251,17 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         rendererRef.current.dispose();
       }
     };
-  }, [count, size, colors, enabled, speed, sphereRadius, cameraDistortion, distortionIntensity]);
+  }, [
+    mobileAdjustedCount, 
+    mobileAdjustedSize, 
+    colors, 
+    enabled, 
+    mobileAdjustedSpeed, 
+    mobileAdjustedSphereRadius, 
+    cameraDistortion, 
+    mobileAdjustedDistortionIntensity,
+    isMobile
+  ]);
 
   return (
     <div 
