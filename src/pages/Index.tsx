@@ -13,11 +13,9 @@ import Fireflies from '@/components/Fireflies';
 const Index = () => {
   return (
     <div className="min-h-screen relative">
-      {/* Updated Fireflies with slower movement and no disappearing */}
+      {/* Fireflies with slow, persistent motion */}
       <Fireflies 
         count={35} 
-        minDuration={250000} 
-        maxDuration={40} 
         minOpacity={0.3}
         maxOpacity={0.6}
         colors={['#4F46E5', '#F8FAFC', '#38BDF8']} 
