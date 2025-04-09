@@ -1,4 +1,3 @@
-
 import type { Config } from "tailwindcss";
 
 export default {
@@ -96,6 +95,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
+				},
+				festival: {
+					amber: '#FFB300',
+					gold: '#FFD700',
+					orange: '#FF9800',
+					red: '#F44336',
+					rose: '#E91E63',
+					emerald: '#4CAF50',
+					lantern: '#FFA726',
+					light: '#FFECB3',
 				}
 			},
 			fontFamily: {
@@ -126,8 +135,8 @@ export default {
 					'50%': { transform: 'scale(1.03)' }
 				},
 				sway: {
-					'0%, 100%': { transform: 'rotate(-2deg)' },
-					'50%': { transform: 'rotate(2deg)' }
+					'0%, 100%': { transform: 'rotate(-3deg) translateY(-3px)' },
+					'50%': { transform: 'rotate(3deg) translateY(3px)' }
 				},
 				twinkle: {
 					'0%, 100%': { opacity: '1' },
@@ -143,7 +152,7 @@ export default {
 				'accordion-up': 'accordion-up 0.2s ease-out',
 				'float': 'float 6s ease-in-out infinite',
 				'breathe': 'breathe 8s ease-in-out infinite',
-				'sway': 'sway 6s ease-in-out infinite',
+				'sway': 'sway 5s ease-in-out infinite',
 				'twinkle': 'twinkle 3s ease-in-out infinite',
 				'shimmer': 'shimmer 8s ease-in-out infinite'
 			},
@@ -152,7 +161,9 @@ export default {
 				'ghibli-hover': '0 12px 40px rgba(0, 0, 0, 0.15), 0 4px 12px rgba(0, 0, 0, 0.08)',
 				'magic': '0 8px 30px rgba(123, 104, 238, 0.2), 0 2px 8px rgba(123, 104, 238, 0.1)',
 				'magic-hover': '0 12px 40px rgba(123, 104, 238, 0.3), 0 4px 12px rgba(123, 104, 238, 0.15)',
-				'cosmic': '0 8px 30px rgba(62, 203, 178, 0.2), 0 2px 8px rgba(62, 203, 178, 0.1)'
+				'cosmic': '0 8px 30px rgba(62, 203, 178, 0.2), 0 2px 8px rgba(62, 203, 178, 0.1)',
+				'lantern': '0 8px 30px rgba(255, 167, 38, 0.3), 0 2px 8px rgba(255, 167, 38, 0.2)',
+				'festive': '0 8px 30px rgba(255, 215, 0, 0.2), 0 2px 8px rgba(255, 215, 0, 0.1)'
 			},
 			backgroundImage: {
 				'ghibli-gradient': 'linear-gradient(to bottom, #F8F2E2, #E5F2F2)',
@@ -160,8 +171,10 @@ export default {
 				'magic-gradient': 'linear-gradient(to bottom, #1A1F2C, #4A3A65)',
 				'cosmic-gradient': 'linear-gradient(135deg, #0E1326, #3A275F)',
 				'starlight-gradient': 'linear-gradient(to bottom right, #D6BCFA, #E5DEFF)',
-				'shimmer': 'linear-gradient(to right, transparent 0%, rgba(155, 135, 245, 0.2) 50%, transparent 100%)',
-				'twilight-card': 'linear-gradient(to bottom right, rgba(255, 255, 255, 0.1), rgba(155, 135, 245, 0.05))'
+				'shimmer': 'linear-gradient(to right, transparent 0%, rgba(255, 215, 0, 0.2) 50%, transparent 100%)',
+				'twilight-card': 'linear-gradient(to bottom right, rgba(255, 255, 255, 0.1), rgba(155, 135, 245, 0.05))',
+				'festive-gradient': 'linear-gradient(135deg, #1F1D12, #372718)',
+				'lantern-glow': 'radial-gradient(circle, rgba(255,167,38,0.4) 0%, rgba(255,167,38,0) 70%)'
 			}
 		}
 	},
