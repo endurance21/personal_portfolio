@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 
 interface FireflyProps {
@@ -196,7 +197,7 @@ const Fireflies: React.FC<FireflyProps> = ({
       window.removeEventListener('resize', handleResize);
       
       // Only remove style element if component is unmounting completely
-      if (enabled === false) {
+      if (!enabled) { // Changed from if (enabled === false) to fix type error
         document.getElementById('firefly-animations')?.remove();
         
         // Remove all fireflies
