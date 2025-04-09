@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
@@ -10,6 +9,8 @@ interface ThreeFirefliesProps {
   speed?: number;
   minDistance?: number;
   maxDistance?: number;
+  cameraDistortion?: boolean;
+  distortionIntensity?: number;
 }
 
 const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
@@ -20,6 +21,8 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   speed = 0.2,
   minDistance = 10,
   maxDistance = 30,
+  cameraDistortion = true,
+  distortionIntensity = 0.05,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
@@ -27,6 +30,16 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
   const firefliesRef = useRef<THREE.Points | null>(null);
   const animationFrameRef = useRef<number | null>(null);
+  const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
+  const targetCameraPositionRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 50));
+
+  // Mouse movement handler
+  const handleMouseMove = (event: MouseEvent) => {
+    if (cameraDistortion) {
+      mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
+      mouseRef.current.y = -((event.clientY / window.innerHeight) * 2 - 1);
+    }
+  };
 
   // Setup scene, camera, renderer and fireflies
   useEffect(() => {
@@ -34,6 +47,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
 
     // Initialize Three.js components
     const scene = new THREE.Scene();
+    
     const camera = new THREE.PerspectiveCamera(
       75, 
       window.innerWidth / window.innerHeight, 
@@ -41,6 +55,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       1000
     );
     camera.position.z = 50;
+    targetCameraPositionRef.current = new THREE.Vector3(0, 0, 50);
     
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
@@ -67,7 +82,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
 
     // Generate positions and colors for all fireflies
     const positions = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
+    const colorsArr = new Float32Array(count * 3);
     const scales = new Float32Array(count);
     const colorObj = new THREE.Color();
 
@@ -87,16 +102,16 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         : '#4F46E5';
       colorObj.set(colorHex);
       
-      colors[i * 3] = colorObj.r;
-      colors[i * 3 + 1] = colorObj.g;
-      colors[i * 3 + 2] = colorObj.b;
+      colorsArr[i * 3] = colorObj.r;
+      colorsArr[i * 3 + 1] = colorObj.g;
+      colorsArr[i * 3 + 2] = colorObj.b;
       
       // Random scale for size variation
       scales[i] = 0.5 + Math.random() * 1.5;
     }
 
     fireflyGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    fireflyGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    fireflyGeometry.setAttribute('color', new THREE.BufferAttribute(colorsArr, 3));
     fireflyGeometry.setAttribute('scale', new THREE.BufferAttribute(scales, 1));
 
     const fireflies = new THREE.Points(fireflyGeometry, fireflyMaterial);
@@ -107,6 +122,11 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     cameraRef.current = camera;
     rendererRef.current = renderer;
     firefliesRef.current = fireflies;
+
+    // Add mouse move event listener for camera distortion
+    if (cameraDistortion) {
+      window.addEventListener('mousemove', handleMouseMove);
+    }
 
     // Animation function
     const animate = () => {
@@ -155,6 +175,20 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         firefliesRef.current.rotation.y += speed * 0.003;
       }
 
+      // Update camera position based on mouse if camera distortion is enabled
+      if (cameraDistortion && cameraRef.current) {
+        // Calculate target camera position based on mouse movement
+        targetCameraPositionRef.current.x = mouseRef.current.x * 10;
+        targetCameraPositionRef.current.y = mouseRef.current.y * 10;
+        
+        // Smoothly interpolate current camera position towards target position
+        cameraRef.current.position.x += (targetCameraPositionRef.current.x - cameraRef.current.position.x) * distortionIntensity;
+        cameraRef.current.position.y += (targetCameraPositionRef.current.y - cameraRef.current.position.y) * distortionIntensity;
+        
+        // Keep camera looking at the center of the scene
+        cameraRef.current.lookAt(0, 0, 0);
+      }
+
       if (rendererRef.current && sceneRef.current && cameraRef.current) {
         rendererRef.current.render(sceneRef.current, cameraRef.current);
       }
@@ -183,6 +217,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       }
       
       window.removeEventListener('resize', handleResize);
+      window.removeEventListener('mousemove', handleMouseMove);
       
       // Clean up Three.js objects
       if (firefliesRef.current) {
@@ -195,7 +230,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         rendererRef.current.dispose();
       }
     };
-  }, [count, size, colors, enabled, speed, minDistance, maxDistance]);
+  }, [count, size, colors, enabled, speed, minDistance, maxDistance, cameraDistortion, distortionIntensity]);
 
   return (
     <div 

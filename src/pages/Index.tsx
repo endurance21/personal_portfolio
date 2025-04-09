@@ -8,18 +8,20 @@ import TechStack from '@/components/TechStack';
 import WorkWithMe from '@/components/WorkWithMe';
 import CallToAction from '@/components/CallToAction';
 import Footer from '@/components/Footer';
-import ThreeFireflies from '@/components/ThreeFireflies'; // Updated to use Three.js fireflies
+import ThreeFireflies from '@/components/ThreeFireflies';
 
 const Index = () => {
   return (
     <div className="min-h-screen relative">
-      {/* Forest night scene with Three.js fireflies */}
+      {/* Forest night scene with Three.js fireflies and camera distortion */}
       <ThreeFireflies 
         count={150} 
         colors={['#4F46E5', '#F8FAFC', '#38BDF8']} 
         speed={0.15}
         minDistance={10}
         maxDistance={40}
+        cameraDistortion={true}
+        distortionIntensity={0.03}
       />
       <Navbar />
       <HeroSection />

@@ -1,7 +1,7 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle, Sparkles, ExternalLink, LampCeiling } from 'lucide-react';
-import ThreeFireflies from "@/components/ThreeFireflies";
 
 const roles = [
   {
