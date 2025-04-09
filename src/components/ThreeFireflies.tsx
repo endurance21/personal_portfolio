@@ -73,7 +73,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     // Create points geometry
     const positions = new Float32Array(count * 3);
     const velocities = new Float32Array(count * 3);
-    const colors = new Float32Array(count * 3);
+    const colorsArray = new Float32Array(count * 3);
     const colorPalette = [new THREE.Color('#4F46E5'), new THREE.Color('#F8FAFC'), new THREE.Color('#38BDF8')];
 
     for (let i = 0; i < count; i++) {
@@ -91,59 +91,24 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
 
       // Random color from palette
       const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-      colors[i3] = color.r;
-      colors[i3 + 1] = color.g;
-      colors[i3 + 2] = color.b;
+      colorsArray[i3] = color.r;
+      colorsArray[i3 + 1] = color.g;
+      colorsArray[i3 + 2] = color.b;
     }
 
-    // const geometry = new THREE.BufferGeometry();
-    // geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    // geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
 
-    // const material = new THREE.PointsMaterial({
-    //   size: size,
-    //   vertexColors: true,
-    //   transparent: true,
-    //   opacity: 0.8,
-    //   sizeAttenuation: true
-    // });
+    const material = new THREE.PointsMaterial({
+      size: size,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.8,
+      sizeAttenuation: true
+    });
 
-    // const points = new THREE.Points(geometry, material);
-    // Number of instances
-    const count = positions.length / 3; // Assuming positions is a Float32Array with x, y, z for each instance
-    
-    // Create sphere geometry and material
-    const sphereGeometry = new THREE.SphereGeometry(1, 16, 16);
-    const material = new THREE.MeshBasicMaterial({ vertexColors: true });
-    
-    // Create InstancedMesh
-    const instancedMesh = new THREE.InstancedMesh(sphereGeometry, material, count);
-    
-    // Temporary objects for setting instance transformations
-    const dummy = new THREE.Object3D();
-    const color = new THREE.Color();
-    
-    for (let i = 0; i < count; i++) {
-      // Set position
-      dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
-    
-      // Set scale if needed
-      dummy.scale.setScalar(size); // 'size' is the desired scale factor
-    
-      // Apply transformation matrix to the instance
-      dummy.updateMatrix();
-      instancedMesh.setMatrixAt(i, dummy.matrix);
-    
-      // Set color if needed
-      color.setRGB(colors[i * 3], colors[i * 3 + 1], colors[i * 3 + 2]);
-      instancedMesh.setColorAt(i, color);
-    }
-    
-    // Ensure the color attribute is updated
-    instancedMesh.instanceColor.needsUpdate = true;
-    
-    // Add the instanced mesh to the scene
-    scene.add(instancedMesh);
+    const points = new THREE.Points(geometry, material);
     scene.add(points);
     firefliesRef.current = points;
 
