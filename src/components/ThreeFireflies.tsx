@@ -147,7 +147,7 @@ instancedMesh.instanceColor.needsUpdate = true;
 // Add the instanced mesh to the scene
 scene.add(instancedMesh);
 
-    firefliesRef.current = points;
+    firefliesRef.current = instancedMesh;
 
     // Store references
     sceneRef.current = scene;
