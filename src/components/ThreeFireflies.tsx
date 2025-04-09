@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -45,7 +44,8 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   const mobileAdjustedCount = isMobile ? Math.floor(count * 0.6) : count;
   const mobileAdjustedSize = isMobile ? size * 0.8 : size;
   const mobileAdjustedSpeed = isMobile ? speed * 0.8 : speed;
-  const mobileAdjustedSphereRadius = isMobile ? sphereRadius * 0.7 : sphereRadius;
+  // Reduce sphere radius to bring particles closer to camera
+  const mobileAdjustedSphereRadius = isMobile ? sphereRadius * 0.5 : sphereRadius * 0.7;
   const mobileAdjustedDistortionIntensity = isMobile ? distortionIntensity * 0.5 : distortionIntensity;
 
   const handleMouseMove = (event: MouseEvent) => {
@@ -75,17 +75,19 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     const adjustedDistortionIntensity = mobileAdjustedDistortionIntensity;
 
     const scene = new THREE.Scene();
+    // Adjust field of view for a closer perspective
     const camera = new THREE.PerspectiveCamera(
-      isMobile ? 75 : 85,
+      isMobile ? 85 : 75,
       window.innerWidth / window.innerHeight,
       0.1,
       2000
     );
-    camera.position.z = adjustedSphereRadius; // Position camera
-    targetCameraPositionRef.current = new THREE.Vector3(0, 0, adjustedSphereRadius);
+    // Move camera closer
+    camera.position.z = adjustedSphereRadius * 0.8; 
+    targetCameraPositionRef.current = new THREE.Vector3(0, 0, adjustedSphereRadius * 0.8);
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: !isMobile, // Disable antialiasing on mobile for better performance
+      antialias: !isMobile, 
       alpha: true
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -106,25 +108,27 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     
     const colorPalette = colors.map(color => new THREE.Color(color));
 
-    // Initialize firefly properties
+    // Initialize firefly properties with a tighter distribution
     for (let i = 0; i < adjustedCount; i++) {
       const i3 = i * 3;
       
-      // Position fireflies more between the camera and the viewport
-      const viewWidth = window.innerWidth * 0.5;
-      const viewHeight = window.innerHeight * 0.5;
+      // Position fireflies in a narrower area for a more concentrated effect
+      const viewWidth = window.innerWidth * 0.4;
+      const viewHeight = window.innerHeight * 0.4;
       
+      // Keep particles more in front of the camera
       positions[i3] = (Math.random() - 0.5) * viewWidth;
       positions[i3 + 1] = (Math.random() - 0.5) * viewHeight;
-      positions[i3 + 2] = (Math.random() - 0.5) * (adjustedSphereRadius * 0.5); // Reduced z-depth
+      // Reduce z-depth even more to bring particles closer to viewer
+      positions[i3 + 2] = (Math.random() - 0.5) * (adjustedSphereRadius * 0.3); 
       
-      // Random velocities - slower on mobile
-      velocities[i3] = (Math.random() - 0.5) * adjustedSpeed;
-      velocities[i3 + 1] = (Math.random() - 0.5) * adjustedSpeed;
-      velocities[i3 + 2] = (Math.random() - 0.5) * adjustedSpeed;
+      // Random velocities - slower for a more gentle float
+      velocities[i3] = (Math.random() - 0.5) * adjustedSpeed * 0.8;
+      velocities[i3 + 1] = (Math.random() - 0.5) * adjustedSpeed * 0.8;
+      velocities[i3 + 2] = (Math.random() - 0.5) * adjustedSpeed * 0.6;
       
-      // Random size - smaller on mobile
-      sizes[i] = adjustedSize * (0.5 + Math.random() * 0.5);
+      // Increase particle size for better visibility
+      sizes[i] = adjustedSize * (0.7 + Math.random() * 0.6);
       
       // Random color from palette
       const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
@@ -178,10 +182,10 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         positions[i3 + 1] += velocities[i3 + 1];
         positions[i3 + 2] += velocities[i3 + 2];
         
-        // Bounce off boundaries with tighter bounds to keep fireflies visible
-        const boundsX = window.innerWidth * 0.5;
-        const boundsY = window.innerHeight * 0.5;
-        const boundsZ = adjustedSphereRadius * 0.4;
+        // Tighter bounds to keep fireflies more visible
+        const boundsX = window.innerWidth * 0.4;
+        const boundsY = window.innerHeight * 0.4;
+        const boundsZ = adjustedSphereRadius * 0.3;
         
         if (Math.abs(positions[i3]) > boundsX) {
           positions[i3] = Math.sign(positions[i3]) * boundsX;

@@ -17,15 +17,15 @@ const Index = () => {
   return (
     <div className="min-h-screen relative">
       <ThreeFireflies 
-        count={isMobile ? 150 : 300}
-        size={isMobile ? 3 : 5}
+        count={isMobile ? 200 : 400}
+        size={isMobile ? 5 : 8}
         colors={['#4F46E5', '#F8FAFC', '#38BDF8']} 
-        speed={isMobile ? 0.15 : 0.2}
+        speed={isMobile ? 0.15 : 0.18}
         minDistance={isMobile ? 5 : 10}
         maxDistance={isMobile ? 20 : 40}
-        sphereRadius={isMobile ? 200 : 250}
+        sphereRadius={isMobile ? 150 : 180}
         cameraDistortion={!isMobile}
-        distortionIntensity={0.02}
+        distortionIntensity={0.025}
       />
       <Navbar />
       <HeroSection />
