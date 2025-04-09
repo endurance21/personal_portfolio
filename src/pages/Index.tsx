@@ -13,8 +13,15 @@ import Fireflies from '@/components/Fireflies';
 const Index = () => {
   return (
     <div className="min-h-screen relative">
-      {/* Add Fireflies component at the page level to be visible across all sections */}
-      <Fireflies count={40} minDuration={15} maxDuration={25} colors={['#4F46E5', '#F8FAFC', '#38BDF8']} />
+      {/* Updated Fireflies with slower movement and no disappearing */}
+      <Fireflies 
+        count={35} 
+        minDuration={25} 
+        maxDuration={40} 
+        minOpacity={0.3}
+        maxOpacity={0.6}
+        colors={['#4F46E5', '#F8FAFC', '#38BDF8']} 
+      />
       <Navbar />
       <HeroSection />
       <Testimonials />

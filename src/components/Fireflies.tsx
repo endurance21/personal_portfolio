@@ -14,10 +14,10 @@ interface FireflyProps {
 const Fireflies: React.FC<FireflyProps> = ({
   count = 50,
   size = 4,
-  minOpacity = 0.2,
+  minOpacity = 0.3, // Increased min opacity to ensure visibility
   maxOpacity = 0.6,
-  minDuration = 15, // Slower, more gentle movement
-  maxDuration = 25, // Slower, more gentle movement
+  minDuration = 25, // Even slower movement
+  maxDuration = 40, // Even slower movement
   colors = ['#4F46E5', '#F8FAFC', '#38BDF8'], // Professional indigo, white, sky blue
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -43,7 +43,7 @@ const Fireflies: React.FC<FireflyProps> = ({
       // Random size variation
       const fireflySize = size * (0.7 + Math.random() * 0.6);
       
-      // Random opacity
+      // Random opacity - but never disappearing completely
       const opacity = minOpacity + Math.random() * (maxOpacity - minOpacity);
       
       // Random speed
@@ -63,7 +63,7 @@ const Fireflies: React.FC<FireflyProps> = ({
         borderRadius: '50%',
         boxShadow: `0 0 ${fireflySize * 2}px ${fireflySize}px ${color}60`,
         opacity: opacity.toString(),
-        animation: `firefly-float-consistent ${duration}s infinite ease-in-out, firefly-glow 5s infinite alternate ease-in-out`,
+        animation: `firefly-gentle-float ${duration}s infinite ease-in-out, firefly-subtle-glow 7s infinite alternate ease-in-out`,
         animationDelay: `${Math.random() * duration}s`,
         zIndex: '10',
         pointerEvents: 'none',
@@ -78,32 +78,32 @@ const Fireflies: React.FC<FireflyProps> = ({
       const style = document.createElement('style');
       style.id = 'firefly-animations';
       style.innerHTML = `
-        @keyframes firefly-float-consistent {
+        @keyframes firefly-gentle-float {
           0% {
             transform: translate3d(0, 0, 0);
           }
           25% {
-            transform: translate3d(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px, 0);
+            transform: translate3d(${Math.random() * 15 - 7.5}px, ${Math.random() * 15 - 7.5}px, 0);
           }
           50% {
-            transform: translate3d(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px, 0);
+            transform: translate3d(${Math.random() * 15 - 7.5}px, ${Math.random() * 15 - 7.5}px, 0);
           }
           75% {
-            transform: translate3d(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px, 0);
+            transform: translate3d(${Math.random() * 15 - 7.5}px, ${Math.random() * 15 - 7.5}px, 0);
           }
           100% {
             transform: translate3d(0, 0, 0);
           }
         }
         
-        @keyframes firefly-glow {
+        @keyframes firefly-subtle-glow {
           0% {
             opacity: ${minOpacity};
-            box-shadow: 0 0 4px 1px rgba(79, 70, 229, 0.3);
+            box-shadow: 0 0 ${size * 1.5}px ${size * 0.7}px rgba(79, 70, 229, 0.3);
           }
           100% {
             opacity: ${maxOpacity};
-            box-shadow: 0 0 8px 3px rgba(79, 70, 229, 0.5);
+            box-shadow: 0 0 ${size * 2.5}px ${size}px rgba(79, 70, 229, 0.5);
           }
         }
       `;
