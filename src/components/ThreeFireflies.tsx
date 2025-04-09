@@ -31,7 +31,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const firefliesRef = useRef<THREE.Mesh[]>([]);
+  const firefliesRef = useRef<THREE.Points | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
   const targetCameraPositionRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, sphereRadius * 2));
@@ -48,7 +48,6 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   useEffect(() => {
     if (!containerRef.current || !enabled) return;
 
-    // Initialize Three.js components
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
       75,
@@ -72,95 +71,92 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     }
     containerRef.current.appendChild(renderer.domElement);
 
-    // Create fireflies using spheres
-    const fireflies: THREE.Mesh[] = [];
-    const sphereGeometry = new THREE.SphereGeometry(1, 16, 16);
+    // Create points geometry
+    const positions = new Float32Array(count * 3);
+    const velocities = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    const colorPalette = [new THREE.Color('#4F46E5'), new THREE.Color('#F8FAFC'), new THREE.Color('#38BDF8')];
 
     for (let i = 0; i < count; i++) {
-      // Create glowing material for each firefly
-      const color = new THREE.Color(colors[Math.floor(Math.random() * colors.length)]);
-      const material = new THREE.MeshBasicMaterial({
-        color: color,
-        transparent: true,
-        opacity: 0.8
-      });
+      const i3 = i * 3;
+      
+      // Position fireflies across the entire screen space
+      positions[i3] = (Math.random() - 0.5) * window.innerWidth * 2;
+      positions[i3 + 1] = (Math.random() - 0.5) * window.innerHeight * 2;
+      positions[i3 + 2] = (Math.random() - 0.5) * sphereRadius * 2;
 
-      const firefly = new THREE.Mesh(sphereGeometry, material);
+      // Random velocities
+      velocities[i3] = (Math.random() - 0.5) * speed;
+      velocities[i3 + 1] = (Math.random() - 0.5) * speed;
+      velocities[i3 + 2] = (Math.random() - 0.5) * speed;
 
-      // Position fireflies across the screen space
-      firefly.position.x = (Math.random() - 0.5) * window.innerWidth;
-      firefly.position.y = (Math.random() - 0.5) * window.innerHeight;
-      firefly.position.z = (Math.random() - 0.5) * sphereRadius * 2;
-
-      // Set random scale for size variation
-      const scale = size * (0.5 + Math.random() * 0.5);
-      firefly.scale.set(scale, scale, scale);
-
-      // Add velocity as user data
-      firefly.userData.velocity = new THREE.Vector3(
-        (Math.random() - 0.5) * speed,
-        (Math.random() - 0.5) * speed,
-        (Math.random() - 0.5) * speed
-      );
-
-      scene.add(firefly);
-      fireflies.push(firefly);
+      // Random color from palette
+      const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
+      colors[i3] = color.r;
+      colors[i3 + 1] = color.g;
+      colors[i3 + 2] = color.b;
     }
+
+    const geometry = new THREE.BufferGeometry();
+    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+    geometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+
+    const material = new THREE.PointsMaterial({
+      size: size,
+      vertexColors: true,
+      transparent: true,
+      opacity: 0.8,
+      sizeAttenuation: true
+    });
+
+    const points = new THREE.Points(geometry, material);
+    scene.add(points);
+    firefliesRef.current = points;
 
     // Store references
     sceneRef.current = scene;
     cameraRef.current = camera;
     rendererRef.current = renderer;
-    firefliesRef.current = fireflies;
 
     // Animation function
     const animate = () => {
-      const time = Date.now() * 0.001;
-      const timeSinceLastMouseMove = (Date.now() - lastMouseMoveTime.current) / 1000;
+      const positions = (firefliesRef.current?.geometry.attributes.position as THREE.BufferAttribute).array as Float32Array;
+      
+      for (let i = 0; i < count; i++) {
+        const i3 = i * 3;
+        
+        // Update positions
+        positions[i3] += velocities[i3];
+        positions[i3 + 1] += velocities[i3 + 1];
+        positions[i3 + 2] += velocities[i3 + 2];
 
-      fireflies.forEach((firefly) => {
-        // Update position
-        firefly.position.x += firefly.userData.velocity.x;
-        firefly.position.y += firefly.userData.velocity.y;
-        firefly.position.z += firefly.userData.velocity.z;
+        // Bounce off boundaries with larger bounds
+        const boundsX = window.innerWidth;
+        const boundsY = window.innerHeight;
+        const boundsZ = sphereRadius;
 
-        // Gentle pulsing effect
-        const scale = firefly.scale.x + Math.sin(time + Math.random()) * 0.02;
-        firefly.scale.set(scale, scale, scale);
-
-        // Bounce off boundaries
-        const bounceMargin = window.innerWidth * 0.75;
-        if (Math.abs(firefly.position.x) > bounceMargin) {
-          firefly.userData.velocity.x *= -0.8;
-          firefly.position.x = Math.sign(firefly.position.x) * bounceMargin;
+        if (Math.abs(positions[i3]) > boundsX) {
+          positions[i3] = Math.sign(positions[i3]) * boundsX;
+          velocities[i3] *= -1;
         }
-        if (Math.abs(firefly.position.y) > window.innerHeight * 0.75) {
-          firefly.userData.velocity.y *= -0.8;
-          firefly.position.y = Math.sign(firefly.position.y) * window.innerHeight * 0.75;
+        if (Math.abs(positions[i3 + 1]) > boundsY) {
+          positions[i3 + 1] = Math.sign(positions[i3 + 1]) * boundsY;
+          velocities[i3 + 1] *= -1;
         }
-        if (Math.abs(firefly.position.z) > sphereRadius) {
-          firefly.userData.velocity.z *= -0.8;
-          firefly.position.z = Math.sign(firefly.position.z) * sphereRadius;
+        if (Math.abs(positions[i3 + 2]) > boundsZ) {
+          positions[i3 + 2] = Math.sign(positions[i3 + 2]) * boundsZ;
+          velocities[i3 + 2] *= -1;
         }
+      }
 
-        // Add small random movements
-        firefly.userData.velocity.x += (Math.random() - 0.5) * 0.01;
-        firefly.userData.velocity.y += (Math.random() - 0.5) * 0.01;
-        firefly.userData.velocity.z += (Math.random() - 0.5) * 0.01;
-
-        // Dampen velocity
-        firefly.userData.velocity.multiplyScalar(0.99);
-      });
+      firefliesRef.current!.geometry.attributes.position.needsUpdate = true;
 
       if (cameraDistortion && cameraRef.current) {
-        targetCameraPositionRef.current.x = mouseRef.current.x * 20;
-        targetCameraPositionRef.current.y = mouseRef.current.y * 20;
+        const timeSinceLastMouseMove = (Date.now() - lastMouseMoveTime.current) / 1000;
+        const activeDistortionIntensity = distortionIntensity * Math.max(0, 1 - (timeSinceLastMouseMove - 2) / 3);
 
-        const activeDistortionIntensity = distortionIntensity * 
-          Math.max(0, 1 - (timeSinceLastMouseMove - 2) / 3);
-
-        camera.position.x += (targetCameraPositionRef.current.x - camera.position.x) * activeDistortionIntensity;
-        camera.position.y += (targetCameraPositionRef.current.y - camera.position.y) * activeDistortionIntensity;
+        camera.position.x += (mouseRef.current.x * 20 - camera.position.x) * activeDistortionIntensity;
+        camera.position.y += (mouseRef.current.y * 20 - camera.position.y) * activeDistortionIntensity;
         camera.lookAt(0, 0, 0);
       }
 
@@ -170,18 +166,16 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
 
     animate();
 
-    // Add mouse move event listener for camera distortion
     if (cameraDistortion) {
       window.addEventListener('mousemove', handleMouseMove);
     }
 
-    // Handle window resize
     const handleResize = () => {
       if (!cameraRef.current || !rendererRef.current) return;
       
-      cameraRef.current.aspect = window.innerWidth / window.innerHeight;
-      cameraRef.current.updateProjectionMatrix();
-      rendererRef.current.setSize(window.innerWidth, window.innerHeight);
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
     };
     
     window.addEventListener('resize', handleResize);
@@ -195,11 +189,11 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       window.removeEventListener('mousemove', handleMouseMove);
       
       // Clean up Three.js objects
-      fireflies.forEach((firefly) => {
-        scene.remove(firefly);
-        firefly.geometry.dispose();
-        (firefly.material as THREE.Material).dispose();
-      });
+      if (firefliesRef.current) {
+        scene.remove(firefliesRef.current);
+        firefliesRef.current.geometry.dispose();
+        (firefliesRef.current.material as THREE.Material).dispose();
+      }
       
       if (rendererRef.current) {
         rendererRef.current.dispose();

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
@@ -13,13 +14,13 @@ const Index = () => {
   return (
     <div className="min-h-screen relative">
       <ThreeFireflies 
-        count={150} // Reduced count since spheres are more visually prominent
-        size={8} // Adjusted size for spheres
+        count={200}
+        size={2}
         colors={['#4F46E5', '#F8FAFC', '#38BDF8']} 
         speed={0.15}
         minDistance={10}
         maxDistance={40}
-        sphereRadius={300} // Large sphere radius for wide distribution
+        sphereRadius={500}
         cameraDistortion={true}
         distortionIntensity={0.03}
       />
