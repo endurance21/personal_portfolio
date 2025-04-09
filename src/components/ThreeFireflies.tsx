@@ -11,7 +11,7 @@ interface ThreeFirefliesProps {
   maxDistance?: number;
   cameraDistortion?: boolean;
   distortionIntensity?: number;
-  sphereRadius?: number;  // New prop for configurable sphere radius
+  sphereRadius?: number;  // Configurable sphere radius
 }
 
 // Helper function to create a circular texture
@@ -35,26 +35,23 @@ const createCircleTexture = () => {
   return new THREE.CanvasTexture(canvas);
 };
 
-// Helper function for more even distribution using Fibonacci sphere
-const fibonacciSpherePoints = (samples: number, radius: number) => {
+// Helper function for distributing points throughout the screen space
+const generateScreenSpacePoints = (count: number, radius: number) => {
   const points: number[] = [];
-  const phi = Math.PI * (3 - Math.sqrt(5)); // Golden angle in radians
   
-  for (let i = 0; i < samples; i++) {
-    const y = 1 - (i / (samples - 1)) * 2;  // y goes from 1 to -1
-    const radiusAtY = Math.sqrt(1 - y * y); // radius at y
+  for (let i = 0; i < count; i++) {
+    // Use a wider distribution across all three axes
+    // X and Y spread across the full screen width/height
+    // Z from -radius to +radius for depth perception
+    const x = (Math.random() * 2 - 1) * window.innerWidth; // Full width of the screen
+    const y = (Math.random() * 2 - 1) * window.innerHeight; // Full height of the screen
+    const z = (Math.random() * 2 - 1) * radius; // Depth within the specified radius
     
-    const theta = phi * i; // Golden angle increment
-    
-    const x = Math.cos(theta) * radiusAtY;
-    const z = Math.sin(theta) * radiusAtY;
-    
-    // Scale by radius and add some randomness
-    const jitter = 0.2; // Amount of random jitter (0-1)
+    // Add some random distribution to avoid perfect grid alignments
     points.push(
-      x * radius * (1 - jitter + Math.random() * jitter),
-      y * radius * (1 - jitter + Math.random() * jitter),
-      z * radius * (1 - jitter + Math.random() * jitter)
+      x + (Math.random() - 0.5) * 100,
+      y + (Math.random() - 0.5) * 100,
+      z + (Math.random() - 0.5) * 100
     );
   }
   
@@ -63,7 +60,7 @@ const fibonacciSpherePoints = (samples: number, radius: number) => {
 
 const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   count = 200,
-  size = 5, // Increased default size for larger fireflies
+  size = 5, 
   colors = ['#4F46E5', '#F8FAFC', '#38BDF8'], // Professional indigo, white, sky blue
   enabled = true,
   speed = 1,
@@ -80,7 +77,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   const firefliesRef = useRef<THREE.Points | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
-  const targetCameraPositionRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, 50));
+  const targetCameraPositionRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, sphereRadius * 2));
   const lastMouseMoveTime = useRef<number>(0);
 
   // Mouse movement handler with improved responsiveness
@@ -103,10 +100,10 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       75, 
       window.innerWidth / window.innerHeight, 
       0.1, 
-      1000
+      2000
     );
-    camera.position.z = sphereRadius * 1.5; // Adjust camera distance based on sphere radius
-    targetCameraPositionRef.current = new THREE.Vector3(0, 0, sphereRadius * 1.5);
+    camera.position.z = sphereRadius * 2; // Position camera further back
+    targetCameraPositionRef.current = new THREE.Vector3(0, 0, sphereRadius * 2);
     
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
@@ -127,7 +124,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     // Create fireflies with enhanced appearance
     const fireflyGeometry = new THREE.BufferGeometry();
     const fireflyMaterial = new THREE.PointsMaterial({
-      size: size * 0.08, // Increased size multiplier for larger fireflies
+      size: size * 0.15, // Increased size for larger fireflies
       vertexColors: true,
       transparent: true,
       blending: THREE.AdditiveBlending,
@@ -136,8 +133,8 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       alphaTest: 0.01 // Helps with rendering order
     });
 
-    // Generate positions using Fibonacci sphere distribution with configurable radius
-    const positions = new Float32Array(fibonacciSpherePoints(count, sphereRadius));
+    // Generate positions distributed across the screen space
+    const positions = new Float32Array(generateScreenSpacePoints(count, sphereRadius * 3)); // Use larger area
     const colorsArr = new Float32Array(count * 3);
     const scales = new Float32Array(count);
     const colorObj = new THREE.Color();
@@ -212,21 +209,22 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
           positions[iy] += (Math.random() - 0.5) * speed * 0.01;
           positions[iz] += (Math.random() - 0.5) * speed * 0.01;
           
-          // Contain within sphere
-          const distance = Math.sqrt(
-            positions[ix] * positions[ix] + 
-            positions[iy] * positions[iy] + 
-            positions[iz] * positions[iz]
-          );
+          // Keep fireflies within reasonable screen boundaries
+          // Use a much wider boundary than before to allow for full screen coverage
+          const screenBoundaryX = window.innerWidth * 1.5;
+          const screenBoundaryY = window.innerHeight * 1.5;
+          const screenBoundaryZ = sphereRadius * 4;
           
-          if (distance > sphereRadius || distance < minDistance) {
-            // Scale to keep within boundaries (using configurable sphereRadius)
-            const targetDistance = distance < minDistance ? minDistance : sphereRadius;
-            const scale = targetDistance / distance;
-            
-            positions[ix] *= scale;
-            positions[iy] *= scale;
-            positions[iz] *= scale;
+          if (Math.abs(positions[ix]) > screenBoundaryX) {
+            positions[ix] *= 0.95; // Gently push back toward center when too far
+          }
+          
+          if (Math.abs(positions[iy]) > screenBoundaryY) {
+            positions[iy] *= 0.95; // Gently push back toward center when too far
+          }
+          
+          if (Math.abs(positions[iz]) > screenBoundaryZ) {
+            positions[iz] *= 0.95; // Gently push back toward center when too far
           }
         }
         
@@ -237,14 +235,14 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         fireflyMaterial.opacity = opacity;
         
         // Slowly rotate the whole swarm
-        firefliesRef.current.rotation.y += speed * 0.003;
+        firefliesRef.current.rotation.y += speed * 0.001;
       }
 
       // Update camera position based on mouse if camera distortion is enabled
       if (cameraDistortion && cameraRef.current) {
         // Calculate target camera position based on mouse movement
-        targetCameraPositionRef.current.x = mouseRef.current.x * 10;
-        targetCameraPositionRef.current.y = mouseRef.current.y * 10;
+        targetCameraPositionRef.current.x = mouseRef.current.x * 20;
+        targetCameraPositionRef.current.y = mouseRef.current.y * 20;
         
         // Adjust distortion intensity based on time since last mouse movement
         // Gradually reduce effect when mouse is still
