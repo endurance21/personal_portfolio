@@ -16,7 +16,7 @@ const Index = () => {
       {/* Updated Fireflies with slower movement and no disappearing */}
       <Fireflies 
         count={35} 
-        minDuration={25} 
+        minDuration={250000} 
         maxDuration={40} 
         minOpacity={0.3}
         maxOpacity={0.6}
