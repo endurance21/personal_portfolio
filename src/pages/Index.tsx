@@ -13,11 +13,11 @@ import Fireflies from '@/components/Fireflies';
 const Index = () => {
   return (
     <div className="min-h-screen relative">
-      {/* Fireflies with slow, persistent motion */}
+      {/* Forest night scene with fireflies */}
       <Fireflies 
-        count={35} 
-        minOpacity={0.3}
-        maxOpacity={0.6}
+        count={40} 
+        minOpacity={0.4}
+        maxOpacity={0.7}
         colors={['#4F46E5', '#F8FAFC', '#38BDF8']} 
       />
       <Navbar />

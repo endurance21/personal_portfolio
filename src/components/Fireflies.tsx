@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 
 interface FireflyProps {
@@ -6,52 +5,51 @@ interface FireflyProps {
   size?: number;
   minOpacity?: number;
   maxOpacity?: number;
-  minDuration?: number;
-  maxDuration?: number;
   colors?: string[];
+  enabled?: boolean;
 }
 
 const Fireflies: React.FC<FireflyProps> = ({
   count = 50,
   size = 4,
-  minOpacity = 0.3, // Increased min opacity to ensure visibility
+  minOpacity = 0.3,
   maxOpacity = 0.6,
-  minDuration = 25, // Even slower movement
-  maxDuration = 40, // Even slower movement
   colors = ['#4F46E5', '#F8FAFC', '#38BDF8'], // Professional indigo, white, sky blue
+  enabled = true,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const firefliesRef = useRef<Array<HTMLDivElement | null>>([]);
-
+  const animationFrameRef = useRef<number | null>(null);
+  
   useEffect(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || !enabled) return;
     
     const container = containerRef.current;
-    const containerWidth = container.offsetWidth;
-    const containerHeight = container.offsetHeight;
+    const containerWidth = window.innerWidth;
+    const containerHeight = window.innerHeight;
     
-    // Only create fireflies if they don't already exist
+    // Create fireflies only once
     if (firefliesRef.current.length === 0) {
-      // Create stylesheet for animations if it doesn't exist
+      // Create stylesheet for the glowing effect
       if (!document.getElementById('firefly-animations')) {
         const style = document.createElement('style');
         style.id = 'firefly-animations';
         style.innerHTML = `
-          @keyframes firefly-subtle-glow {
-            0% {
-              opacity: ${minOpacity};
-              box-shadow: 0 0 ${size * 1.5}px ${size * 0.7}px rgba(79, 70, 229, 0.3);
+          @keyframes firefly-pulse {
+            0%, 100% {
+              opacity: var(--base-opacity);
+              box-shadow: 0 0 var(--glow-size) var(--glow-intensity) var(--glow-color);
             }
-            100% {
-              opacity: ${maxOpacity};
-              box-shadow: 0 0 ${size * 2.5}px ${size}px rgba(79, 70, 229, 0.5);
+            50% {
+              opacity: calc(var(--base-opacity) * 1.5);
+              box-shadow: 0 0 calc(var(--glow-size) * 1.2) calc(var(--glow-intensity) * 1.2) var(--glow-color);
             }
           }
         `;
         document.head.appendChild(style);
       }
       
-      // Create the initial fireflies
+      // Create fireflies with initial properties
       for (let i = 0; i < count; i++) {
         const firefly = document.createElement('div');
         
@@ -59,14 +57,33 @@ const Fireflies: React.FC<FireflyProps> = ({
         const x = Math.random() * containerWidth;
         const y = Math.random() * containerHeight;
         
-        // Random size variation
+        // Random size variation for more natural feel
         const fireflySize = size * (0.7 + Math.random() * 0.6);
         
-        // Random opacity - but never disappearing completely
-        const opacity = minOpacity + Math.random() * (maxOpacity - minOpacity);
+        // Random opacity but always visible
+        const baseOpacity = minOpacity + Math.random() * (maxOpacity - minOpacity);
         
         // Random color from the palette
         const color = colors[Math.floor(Math.random() * colors.length)];
+        
+        // Set properties as CSS variables for animation
+        firefly.style.setProperty('--base-opacity', baseOpacity.toString());
+        firefly.style.setProperty('--glow-size', `${fireflySize * 2}px`);
+        firefly.style.setProperty('--glow-intensity', `${fireflySize}px`);
+        firefly.style.setProperty('--glow-color', `${color}80`);
+        
+        // Random animation duration for blinking (between 3-7 seconds)
+        const pulseSpeed = 3 + Math.random() * 4;
+        
+        // Random velocity for movement
+        const vx = (Math.random() - 0.5) * 0.5; // pixels per frame
+        const vy = (Math.random() - 0.5) * 0.5; // pixels per frame
+        
+        // Store velocity data
+        firefly.dataset.vx = vx.toString();
+        firefly.dataset.vy = vy.toString();
+        firefly.dataset.x = x.toString();
+        firefly.dataset.y = y.toString();
         
         // Apply styles
         Object.assign(firefly.style, {
@@ -77,13 +94,12 @@ const Fireflies: React.FC<FireflyProps> = ({
           height: `${fireflySize}px`,
           backgroundColor: color,
           borderRadius: '50%',
-          boxShadow: `0 0 ${fireflySize * 2}px ${fireflySize}px ${color}60`,
-          opacity: opacity.toString(),
-          animation: `firefly-subtle-glow 7s infinite alternate ease-in-out`,
-          animationDelay: `${Math.random() * 7}s`,
+          opacity: baseOpacity.toString(),
+          boxShadow: `0 0 ${fireflySize * 2}px ${fireflySize}px ${color}80`,
+          animation: `firefly-pulse ${pulseSpeed}s infinite ease-in-out`,
+          animationDelay: `${Math.random() * 5}s`,
           zIndex: '10',
           pointerEvents: 'none',
-          transition: 'transform 30s ease-in-out, left 30s ease-in-out, top 30s ease-in-out',
           transform: 'translate3d(0, 0, 0)',
         });
         
@@ -92,41 +108,107 @@ const Fireflies: React.FC<FireflyProps> = ({
       }
     }
     
-    // Function to update firefly positions smoothly
-    const updateFireflyPositions = () => {
-      if (!containerRef.current) return;
-      
-      const containerWidth = containerRef.current.offsetWidth;
-      const containerHeight = containerRef.current.offsetHeight;
-      
+    // Function for smooth continuous movement
+    const animateFireflies = () => {
       firefliesRef.current.forEach((firefly) => {
         if (!firefly) return;
         
-        // Create a smooth random movement within a small radius
-        const newX = Math.random() * containerWidth;
-        const newY = Math.random() * containerHeight;
+        // Get current position and velocity
+        let x = parseFloat(firefly.dataset.x || '0');
+        let y = parseFloat(firefly.dataset.y || '0');
+        let vx = parseFloat(firefly.dataset.vx || '0');
+        let vy = parseFloat(firefly.dataset.vy || '0');
         
-        // Apply new position with smooth transition
-        firefly.style.left = `${newX}px`;
-        firefly.style.top = `${newY}px`;
+        // Apply small random changes to velocity (gentle wandering)
+        vx += (Math.random() - 0.5) * 0.03;
+        vy += (Math.random() - 0.5) * 0.03;
+        
+        // Dampen velocity for smooth, gentle movement
+        vx = vx * 0.99;
+        vy = vy * 0.99;
+        
+        // Update position
+        x += vx;
+        y += vy;
+        
+        // Boundary check with soft bounce
+        if (x < 0 || x > containerWidth) {
+          vx = -vx * 0.5; // Gentle bounce
+          x = Math.max(0, Math.min(x, containerWidth));
+        }
+        
+        if (y < 0 || y > containerHeight) {
+          vy = -vy * 0.5; // Gentle bounce
+          y = Math.max(0, Math.min(y, containerHeight));
+        }
+        
+        // Store updated values
+        firefly.dataset.x = x.toString();
+        firefly.dataset.y = y.toString();
+        firefly.dataset.vx = vx.toString();
+        firefly.dataset.vy = vy.toString();
+        
+        // Apply new position
+        firefly.style.left = `${x}px`;
+        firefly.style.top = `${y}px`;
+      });
+      
+      // Continue animation loop
+      animationFrameRef.current = requestAnimationFrame(animateFireflies);
+    };
+    
+    // Start the animation
+    animationFrameRef.current = requestAnimationFrame(animateFireflies);
+    
+    // Handle window resize
+    const handleResize = () => {
+      if (!containerRef.current) return;
+      
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+      
+      // Update firefly positions on resize to keep them within bounds
+      firefliesRef.current.forEach((firefly) => {
+        if (!firefly) return;
+        
+        let x = parseFloat(firefly.dataset.x || '0');
+        let y = parseFloat(firefly.dataset.y || '0');
+        
+        // Ensure fireflies stay within new boundaries
+        x = Math.min(x, newWidth);
+        y = Math.min(y, newHeight);
+        
+        firefly.dataset.x = x.toString();
+        firefly.dataset.y = y.toString();
+        firefly.style.left = `${x}px`;
+        firefly.style.top = `${y}px`;
       });
     };
     
-    // Update positions every 30 seconds for smooth, slow movement
-    const intervalId = setInterval(updateFireflyPositions, 30000);
+    window.addEventListener('resize', handleResize);
     
-    // Initial position update
-    updateFireflyPositions();
-    
-    // Cleanup function
+    // Cleanup
     return () => {
-      clearInterval(intervalId);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
       
-      if (document.getElementById('firefly-animations')) {
+      window.removeEventListener('resize', handleResize);
+      
+      // Only remove style element if component is unmounting completely
+      if (enabled === false) {
         document.getElementById('firefly-animations')?.remove();
+        
+        // Remove all fireflies
+        firefliesRef.current.forEach(firefly => {
+          if (firefly && firefly.parentNode) {
+            firefly.parentNode.removeChild(firefly);
+          }
+        });
+        firefliesRef.current = [];
       }
     };
-  }, [count, size, minOpacity, maxOpacity, minDuration, maxDuration, colors]);
+  }, [count, size, minOpacity, maxOpacity, colors, enabled]);
 
   return (
     <div 
