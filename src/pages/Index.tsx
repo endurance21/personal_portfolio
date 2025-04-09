@@ -14,7 +14,7 @@ const Index = () => {
   return (
     <div className="min-h-screen relative">
       {/* Add Fireflies component at the page level to be visible across all sections */}
-      <Fireflies count={40} minDuration={12} maxDuration={20} colors={['#667eea', '#ffffff', '#434190']} />
+      <Fireflies count={40} minDuration={15} maxDuration={25} colors={['#4F46E5', '#F8FAFC', '#38BDF8']} />
       <Navbar />
       <HeroSection />
       <Testimonials />

@@ -16,9 +16,9 @@ const Fireflies: React.FC<FireflyProps> = ({
   size = 4,
   minOpacity = 0.2,
   maxOpacity = 0.6,
-  minDuration = 12, // Even slower, more professional movement
-  maxDuration = 20, // Even slower, more professional movement
-  colors = ['#667eea', '#ffffff', '#434190'], // Professional blue/indigo, white, deep indigo
+  minDuration = 15, // Slower, more gentle movement
+  maxDuration = 25, // Slower, more gentle movement
+  colors = ['#4F46E5', '#F8FAFC', '#38BDF8'], // Professional indigo, white, sky blue
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -63,7 +63,7 @@ const Fireflies: React.FC<FireflyProps> = ({
         borderRadius: '50%',
         boxShadow: `0 0 ${fireflySize * 2}px ${fireflySize}px ${color}60`,
         opacity: opacity.toString(),
-        animation: `firefly-float-consistent ${duration}s infinite ease-in-out, firefly-glow 3.5s infinite alternate ease-in-out`,
+        animation: `firefly-float-consistent ${duration}s infinite ease-in-out, firefly-glow 5s infinite alternate ease-in-out`,
         animationDelay: `${Math.random() * duration}s`,
         zIndex: '10',
         pointerEvents: 'none',
@@ -83,13 +83,13 @@ const Fireflies: React.FC<FireflyProps> = ({
             transform: translate3d(0, 0, 0);
           }
           25% {
-            transform: translate3d(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px, 0);
+            transform: translate3d(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px, 0);
           }
           50% {
-            transform: translate3d(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px, 0);
+            transform: translate3d(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px, 0);
           }
           75% {
-            transform: translate3d(${Math.random() * 30 - 15}px, ${Math.random() * 30 - 15}px, 0);
+            transform: translate3d(${Math.random() * 20 - 10}px, ${Math.random() * 20 - 10}px, 0);
           }
           100% {
             transform: translate3d(0, 0, 0);
@@ -99,11 +99,11 @@ const Fireflies: React.FC<FireflyProps> = ({
         @keyframes firefly-glow {
           0% {
             opacity: ${minOpacity};
-            box-shadow: 0 0 4px 1px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 0 4px 1px rgba(79, 70, 229, 0.3);
           }
           100% {
             opacity: ${maxOpacity};
-            box-shadow: 0 0 8px 3px rgba(102, 126, 234, 0.5);
+            box-shadow: 0 0 8px 3px rgba(79, 70, 229, 0.5);
           }
         }
       `;
