@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
 
@@ -34,7 +33,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   const firefliesRef = useRef<THREE.Points | null>(null);
   const animationFrameRef = useRef<number | null>(null);
   const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
-  const targetCameraPositionRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, sphereRadius * 2));
+  const targetCameraPositionRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, sphereRadius));
   const lastMouseMoveTime = useRef<number>(0);
 
   const handleMouseMove = (event: MouseEvent) => {
@@ -50,13 +49,13 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
 
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(
-      75,
+      85,
       window.innerWidth / window.innerHeight,
       0.1,
       2000
     );
-    camera.position.z = sphereRadius * 2;
-    targetCameraPositionRef.current = new THREE.Vector3(0, 0, sphereRadius * 2);
+    camera.position.z = sphereRadius; // Closer camera position
+    targetCameraPositionRef.current = new THREE.Vector3(0, 0, sphereRadius);
 
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
@@ -80,10 +79,10 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     for (let i = 0; i < count; i++) {
       const i3 = i * 3;
       
-      // Position fireflies across the entire screen space
-      positions[i3] = (Math.random() - 0.5) * window.innerWidth * 2;
-      positions[i3 + 1] = (Math.random() - 0.5) * window.innerHeight * 2;
-      positions[i3 + 2] = (Math.random() - 0.5) * sphereRadius * 2;
+      // Position fireflies more between the camera and the viewport
+      positions[i3] = (Math.random() - 0.5) * window.innerWidth;
+      positions[i3 + 1] = (Math.random() - 0.5) * window.innerHeight;
+      positions[i3 + 2] = (Math.random() - 0.5) * (sphereRadius * 0.8); // Reduced z-depth to bring them closer
 
       // Random velocities
       velocities[i3] = (Math.random() - 0.5) * speed;
@@ -130,10 +129,10 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
         positions[i3 + 1] += velocities[i3 + 1];
         positions[i3 + 2] += velocities[i3 + 2];
 
-        // Bounce off boundaries with larger bounds
-        const boundsX = window.innerWidth;
-        const boundsY = window.innerHeight;
-        const boundsZ = sphereRadius;
+        // Bounce off boundaries with tighter bounds to keep fireflies visible
+        const boundsX = window.innerWidth * 0.7;
+        const boundsY = window.innerHeight * 0.7;
+        const boundsZ = sphereRadius * 0.5;
 
         if (Math.abs(positions[i3]) > boundsX) {
           positions[i3] = Math.sign(positions[i3]) * boundsX;
@@ -211,4 +210,3 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
 };
 
 export default ThreeFireflies;
-

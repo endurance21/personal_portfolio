@@ -14,13 +14,13 @@ const Index = () => {
   return (
     <div className="min-h-screen relative">
       <ThreeFireflies 
-        count={200}
-        size={2}
+        count={300}
+        size={2.5}
         colors={['#4F46E5', '#F8FAFC', '#38BDF8']} 
-        speed={0.15}
+        speed={0.1}
         minDistance={10}
         maxDistance={40}
-        sphereRadius={500}
+        sphereRadius={300}
         cameraDistortion={true}
         distortionIntensity={0.03}
       />
