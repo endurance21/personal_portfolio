@@ -15,7 +15,7 @@ interface ThreeFirefliesProps {
 
 const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   count = 100,
-  size = 4,
+  size = 10,
   colors = ['#4F46E5', '#F8FAFC', '#38BDF8'], // Professional indigo, white, sky blue
   enabled = true,
   speed = 0.2,
