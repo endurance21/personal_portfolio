@@ -60,15 +60,15 @@ const generateScreenSpacePoints = (count: number, radius: number) => {
 
 const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   count = 200,
-  size = 5, 
+  size = 8, 
   colors = ['#4F46E5', '#F8FAFC', '#38BDF8'], // Professional indigo, white, sky blue
   enabled = true,
   speed = 1,
   minDistance = 10,
   maxDistance = 30,
   cameraDistortion = true,
-  distortionIntensity = 0.05,
-  sphereRadius = 100, // Default sphere radius
+  distortionIntensity = 0.005,
+  sphereRadius = 30, // Default sphere radius
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const sceneRef = useRef<THREE.Scene | null>(null);
