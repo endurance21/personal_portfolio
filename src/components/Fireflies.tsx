@@ -16,9 +16,9 @@ const Fireflies: React.FC<FireflyProps> = ({
   size = 4,
   minOpacity = 0.3,
   maxOpacity = 0.8,
-  minDuration = 8,
-  maxDuration = 15,
-  colors = ['#FF5555', '#FFFFFF', '#FFD700'],
+  minDuration = 4, // Faster movement
+  maxDuration = 8, // Faster movement
+  colors = ['#FF5555', '#FFFFFF', '#000000'], // Red, white, black
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -82,32 +82,14 @@ const Fireflies: React.FC<FireflyProps> = ({
           0%, 100% {
             transform: translate3d(0, 0, 0);
           }
-          10% {
-            transform: translate3d(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px, 0);
-          }
-          20% {
-            transform: translate3d(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px, 0);
-          }
-          30% {
-            transform: translate3d(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px, 0);
-          }
-          40% {
-            transform: translate3d(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px, 0);
+          25% {
+            transform: translate3d(${Math.random() * 80 - 40}px, ${Math.random() * 80 - 40}px, 0);
           }
           50% {
-            transform: translate3d(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px, 0);
+            transform: translate3d(${Math.random() * 80 - 40}px, ${Math.random() * 80 - 40}px, 0);
           }
-          60% {
-            transform: translate3d(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px, 0);
-          }
-          70% {
-            transform: translate3d(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px, 0);
-          }
-          80% {
-            transform: translate3d(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px, 0);
-          }
-          90% {
-            transform: translate3d(${Math.random() * 40 - 20}px, ${Math.random() * 40 - 20}px, 0);
+          75% {
+            transform: translate3d(${Math.random() * 80 - 40}px, ${Math.random() * 80 - 40}px, 0);
           }
         }
         
