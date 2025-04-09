@@ -122,8 +122,8 @@ const Fireflies: React.FC<FireflyProps> = ({
         let vy = parseFloat(firefly.dataset.vy || '0');
         
         // Apply small random changes to velocity (gentle wandering)
-        vx += (Math.random() - 0.5) * 0.5;
-        vy += (Math.random() - 0.5) * 0.5;
+        vx += (Math.random() - 0.5) * 0.1;
+        vy += (Math.random() - 0.5) * 0.1;
         
         // Dampen velocity for smooth, gentle movement
         vx = vx * 0.99;
@@ -156,7 +156,7 @@ const Fireflies: React.FC<FireflyProps> = ({
       });
       
       // Continue animation loop
-      animationFrameRef.current = requestAnimationFrame(animateFireflies);
+      // animationFrameRef.current = requestAnimationFrame(animateFireflies);
     };
     
     // Start the animation
