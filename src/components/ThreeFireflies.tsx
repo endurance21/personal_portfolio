@@ -54,7 +54,7 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       0.1, 
       1000
     );
-    camera.position.z = 50;
+    camera.position.z = 500;
     targetCameraPositionRef.current = new THREE.Vector3(0, 0, 50);
     
     const renderer = new THREE.WebGLRenderer({ 
