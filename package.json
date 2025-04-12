@@ -3,10 +3,10 @@
   "private": true,
   "version": "0.0.1",
   "type": "module",
-  "homepage": "https://endurance21.github.io/personal_portfolio",
+  "homepage": "https://endurance21.github.io/personal_portfolio/",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp dist/index.html dist/404.html && touch dist/.nojekyll",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
