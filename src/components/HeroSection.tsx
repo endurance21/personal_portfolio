@@ -7,19 +7,19 @@ const roles = [
   {
     title: "Microsoft Engineer",
     description: "Building enterprise-scale solutions",
-    logo: "/microsoft-logo.png",
+    logo: "/microsoft-logo.svg",
     color: "bg-indigo-600"
   },
   {
     title: "GSoC Fellow",
     description: "Open source contributor",
-    logo: "/google-logo.png",
+    logo: "/google-logo.svg",
     color: "bg-blue-500"
   },
   {
     title: "Freelance Developer",
     description: "Crafting custom solutions",
-    logo: "/freelance-logo.png",
+    logo: "/freelance-logo.svg",
     color: "bg-slate-200"
   }
 ];
