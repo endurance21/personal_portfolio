@@ -11,7 +11,7 @@ interface FireflyProps {
 }
 
 const Fireflies: React.FC<FireflyProps> = ({
-  count = 50,
+  count = 200,
   size = 4,
   minOpacity = 0.3,
   maxOpacity = 0.6,

@@ -7,20 +7,20 @@ const roles = [
   {
     title: "Microsoft Engineer",
     description: "Building enterprise-scale solutions",
-    logo: "/microsoft-logo.svg",
-    color: "bg-indigo-600"
+    logo: "/personal_portfolio/microsoft-logo.svg",
+    color: "bg-white"
   },
   {
     title: "GSoC Fellow",
     description: "Open source contributor",
-    logo: "/google-logo.svg",
-    color: "bg-blue-500"
+    logo: "/personal_portfolio/google_white_bg.svg",
+    color: "bg-white"
   },
   {
     title: "Freelance Developer",
     description: "Crafting custom solutions",
-    logo: "/freelance-logo.svg",
-    color: "bg-slate-200"
+    logo: "/personal_portfolio/freelance-logo.svg",
+    color: "bg-white"
   }
 ];
 
@@ -30,7 +30,7 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveRole((prev) => (prev + 1) % roles.length);
-    }, 3000); // Slower animation (3000ms)
+    }, 1400); // Slower animation (3000ms)
     return () => clearInterval(interval);
   }, []);
 
@@ -95,9 +95,9 @@ const HeroSection = () => {
             <div className="relative">
               <div className="absolute inset-0 bg-indigo-400/10 rounded-full blur-3xl transform scale-75"></div>
               <img 
-                src="/hero-illustration.png" 
+                src="/personal_portfolio/hero_illustration.svg" 
                 alt="Studio Ghibli style developer in a magical workspace" 
-                className="relative z-10 w-full max-w-md animate-float rounded-lg shadow-professional"
+                className="relative z-10 w-full max-w-md animate-float  shadow-professional rounded-full"
               />
               <div className="absolute top-0 right-0 w-8 h-8 text-blue-400 animate-twinkle">
                 <Sparkles className="w-full h-full" />
