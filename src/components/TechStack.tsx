@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Leaf, Database, Code2, Server, Award, Package } from 'lucide-react';
 
@@ -62,7 +61,7 @@ const TechStack = () => {
   ];
 
   return (
-    <section className="py-24 px-4 relative overflow-hidden">
+    <section id="tech-stack" className="py-24 px-4 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-1/3 right-0 w-96 h-96 bg-magic-teal/10 rounded-full blur-3xl"></div>
         <div className="absolute bottom-1/3 left-0 w-96 h-96 bg-magic-violet/10 rounded-full blur-3xl"></div>

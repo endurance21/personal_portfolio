@@ -31,20 +31,18 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const pointsRef = useRef<THREE.Points | null>(null);
+  const firefliesRef = useRef<THREE.Mesh[]>([]);
   const animationFrameRef = useRef<number | null>(null);
   const mouseRef = useRef<THREE.Vector2>(new THREE.Vector2(0, 0));
   const targetCameraPositionRef = useRef<THREE.Vector3>(new THREE.Vector3(0, 0, sphereRadius));
   const lastMouseMoveTime = useRef<number>(0);
-  const positionsRef = useRef<Float32Array | null>(null);
-  const velocitiesRef = useRef<Float32Array | null>(null);
+  const velocitiesRef = useRef<{ x: number; y: number; z: number }[]>([]);
   const isMobile = useIsMobile();
 
   // Adjust parameters for mobile
   const mobileAdjustedCount = isMobile ? Math.floor(count * 0.6) : count;
   const mobileAdjustedSize = isMobile ? size * 0.8 : size;
   const mobileAdjustedSpeed = isMobile ? speed * 0.8 : speed;
-  // Reduce sphere radius to bring particles closer to camera
   const mobileAdjustedSphereRadius = isMobile ? sphereRadius * 0.5 : sphereRadius * 0.7;
   const mobileAdjustedDistortionIntensity = isMobile ? distortionIntensity * 0.5 : distortionIntensity;
 
@@ -53,6 +51,24 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
       mouseRef.current.x = (event.clientX / window.innerWidth) * 2 - 1;
       mouseRef.current.y = -((event.clientY / window.innerHeight) * 2 - 1);
       lastMouseMoveTime.current = Date.now();
+
+      // Add mouse influence on fireflies
+      if (firefliesRef.current.length > 0) {
+        const mousePos = new THREE.Vector3(
+          mouseRef.current.x * window.innerWidth * 0.5,
+          -mouseRef.current.y * window.innerHeight * 0.5,
+          0
+        );
+
+        firefliesRef.current.forEach((firefly, index) => {
+          const distance = mousePos.distanceTo(firefly.position);
+          if (distance < maxDistance) {
+            const influence = 1 - distance / maxDistance;
+            velocitiesRef.current[index].x += (mousePos.x - firefly.position.x) * influence * 0.01;
+            velocitiesRef.current[index].y += (mousePos.y - firefly.position.y) * influence * 0.01;
+          }
+        });
+      }
     }
   };
 
@@ -72,22 +88,19 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     const adjustedSize = mobileAdjustedSize;
     const adjustedSpeed = mobileAdjustedSpeed;
     const adjustedSphereRadius = mobileAdjustedSphereRadius;
-    const adjustedDistortionIntensity = mobileAdjustedDistortionIntensity;
 
     const scene = new THREE.Scene();
-    // Adjust field of view for a closer perspective
     const camera = new THREE.PerspectiveCamera(
       isMobile ? 85 : 75,
       window.innerWidth / window.innerHeight,
       0.1,
       2000
     );
-    // Move camera closer
-    camera.position.z = adjustedSphereRadius * 0.8; 
+    camera.position.z = adjustedSphereRadius * 0.8;
     targetCameraPositionRef.current = new THREE.Vector3(0, 0, adjustedSphereRadius * 0.8);
 
     const renderer = new THREE.WebGLRenderer({
-      antialias: !isMobile, 
+      antialias: !isMobile,
       alpha: true
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
@@ -100,66 +113,52 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
     }
     containerRef.current.appendChild(renderer.domElement);
 
-    // Create points geometry
-    const positions = new Float32Array(adjustedCount * 3);
-    const velocities = new Float32Array(adjustedCount * 3);
-    const colorsArray = new Float32Array(adjustedCount * 3);
-    const sizes = new Float32Array(adjustedCount);
-    
+    // Create sphere geometry for fireflies
+    const geometry = new THREE.SphereGeometry(1, 16, 16);
     const colorPalette = colors.map(color => new THREE.Color(color));
 
-    // Initialize firefly properties with a tighter distribution
+    // Create fireflies
     for (let i = 0; i < adjustedCount; i++) {
-      const i3 = i * 3;
-      
-      // Position fireflies in a narrower area for a more concentrated effect
+      const material = new THREE.MeshBasicMaterial({
+        color: colorPalette[Math.floor(Math.random() * colorPalette.length)],
+        transparent: true,
+        opacity: 0.8,
+      });
+
+      const firefly = new THREE.Mesh(geometry, material);
+      const scale = (adjustedSize * (0.7 + Math.random() * 0.6)) * 0.03; // Adjust scale to be smaller
+      firefly.scale.set(scale, scale, scale);
+
+      // Position fireflies
       const viewWidth = window.innerWidth * 0.4;
       const viewHeight = window.innerHeight * 0.4;
+      firefly.position.set(
+        (Math.random() - 0.5) * viewWidth,
+        (Math.random() - 0.5) * viewHeight,
+        (Math.random() - 0.5) * (adjustedSphereRadius * 0.3)
+      );
+
+      // Add glow effect
+      const glowMaterial = new THREE.MeshBasicMaterial({
+        color: colorPalette[Math.floor(Math.random() * colorPalette.length)],
+        transparent: true,
+        opacity: 0.3,
+      });
+      const glowSphere = new THREE.Mesh(geometry, glowMaterial);
+      const glowScale = scale * 2;
+      glowSphere.scale.set(glowScale, glowScale, glowScale);
+      firefly.add(glowSphere);
+
+      scene.add(firefly);
+      firefliesRef.current.push(firefly);
       
-      // Keep particles more in front of the camera
-      positions[i3] = (Math.random() - 0.5) * viewWidth;
-      positions[i3 + 1] = (Math.random() - 0.5) * viewHeight;
-      // Reduce z-depth even more to bring particles closer to viewer
-      positions[i3 + 2] = (Math.random() - 0.5) * (adjustedSphereRadius * 0.3); 
-      
-      // Random velocities - slower for a more gentle float
-      velocities[i3] = (Math.random() - 0.5) * adjustedSpeed * 0.8;
-      velocities[i3 + 1] = (Math.random() - 0.5) * adjustedSpeed * 0.8;
-      velocities[i3 + 2] = (Math.random() - 0.5) * adjustedSpeed * 0.6;
-      
-      // Increase particle size for better visibility
-      sizes[i] = adjustedSize * (0.7 + Math.random() * 0.6);
-      
-      // Random color from palette
-      const color = colorPalette[Math.floor(Math.random() * colorPalette.length)];
-      colorsArray[i3] = color.r;
-      colorsArray[i3 + 1] = color.g;
-      colorsArray[i3 + 2] = color.b;
+      // Initialize velocity
+      velocitiesRef.current.push({
+        x: (Math.random() - 0.5) * adjustedSpeed * 0.8,
+        y: (Math.random() - 0.5) * adjustedSpeed * 0.8,
+        z: (Math.random() - 0.5) * adjustedSpeed * 0.6
+      });
     }
-    
-    // Store references for animation
-    positionsRef.current = positions;
-    velocitiesRef.current = velocities;
-
-    // Create points geometry
-    const geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    geometry.setAttribute('color', new THREE.BufferAttribute(colorsArray, 3));
-    geometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
-
-    // Create shader material for better-looking points
-    const material = new THREE.PointsMaterial({
-      size: 1,
-      vertexColors: true,
-      transparent: true,
-      opacity: 0.8,
-      sizeAttenuation: true
-    });
-
-    const points = new THREE.Points(geometry, material);
-    scene.add(points);
-    
-    pointsRef.current = points;
 
     // Store references
     sceneRef.current = scene;
@@ -168,110 +167,113 @@ const ThreeFireflies: React.FC<ThreeFirefliesProps> = ({
 
     // Animation function
     const animate = () => {
-      if (!pointsRef.current || !positionsRef.current || !velocitiesRef.current) return;
-      
-      const positions = positionsRef.current;
-      const velocities = velocitiesRef.current;
-      const positionAttribute = pointsRef.current.geometry.attributes.position;
-      
-      for (let i = 0; i < adjustedCount; i++) {
-        const i3 = i * 3;
+      if (!sceneRef.current || !cameraRef.current || !rendererRef.current) return;
+
+      firefliesRef.current.forEach((firefly, index) => {
+        const velocity = velocitiesRef.current[index];
         
         // Update positions
-        positions[i3] += velocities[i3];
-        positions[i3 + 1] += velocities[i3 + 1];
-        positions[i3 + 2] += velocities[i3 + 2];
-        
-        // Tighter bounds to keep fireflies more visible
+        firefly.position.x += velocity.x;
+        firefly.position.y += velocity.y;
+        firefly.position.z += velocity.z;
+
+        // Bounds checking
         const boundsX = window.innerWidth * 0.4;
         const boundsY = window.innerHeight * 0.4;
         const boundsZ = adjustedSphereRadius * 0.3;
-        
-        if (Math.abs(positions[i3]) > boundsX) {
-          positions[i3] = Math.sign(positions[i3]) * boundsX;
-          velocities[i3] *= -1;
+
+        if (Math.abs(firefly.position.x) > boundsX) {
+          firefly.position.x = Math.sign(firefly.position.x) * boundsX;
+          velocity.x *= -1;
         }
-        if (Math.abs(positions[i3 + 1]) > boundsY) {
-          positions[i3 + 1] = Math.sign(positions[i3 + 1]) * boundsY;
-          velocities[i3 + 1] *= -1;
+        if (Math.abs(firefly.position.y) > boundsY) {
+          firefly.position.y = Math.sign(firefly.position.y) * boundsY;
+          velocity.y *= -1;
         }
-        if (Math.abs(positions[i3 + 2]) > boundsZ) {
-          positions[i3 + 2] = Math.sign(positions[i3 + 2]) * boundsZ;
-          velocities[i3 + 2] *= -1;
+        if (Math.abs(firefly.position.z) > boundsZ) {
+          firefly.position.z = Math.sign(firefly.position.z) * boundsZ;
+          velocity.z *= -1;
         }
+
+        // Add slight random movement
+        velocity.x += (Math.random() - 0.5) * 0.1;
+        velocity.y += (Math.random() - 0.5) * 0.1;
+        velocity.z += (Math.random() - 0.5) * 0.1;
+
+        // Dampen velocities
+        velocity.x *= 0.99;
+        velocity.y *= 0.99;
+        velocity.z *= 0.99;
+
+        // Pulse the glow
+        const glow = firefly.children[0] as THREE.Mesh;
+        const scale = 1 + Math.sin(Date.now() * 0.003 + index) * 0.2;
+        glow.scale.set(scale, scale, scale);
+      });
+
+      // Camera movement based on mouse position
+      if (cameraDistortion && Date.now() - lastMouseMoveTime.current < 2000) {
+        const targetX = mouseRef.current.x * 50;
+        const targetY = mouseRef.current.y * 50;
+        cameraRef.current.position.x += (targetX - cameraRef.current.position.x) * 0.05;
+        cameraRef.current.position.y += (targetY - cameraRef.current.position.y) * 0.05;
       }
-      
-      // Update buffer attribute
-      positionAttribute.needsUpdate = true;
-      
-      if (cameraDistortion && cameraRef.current) {
-        const timeSinceLastMouseMove = (Date.now() - lastMouseMoveTime.current) / 1000;
-        const activeDistortionIntensity = adjustedDistortionIntensity * Math.max(0, 1 - (timeSinceLastMouseMove - 2) / 3);
-        
-        camera.position.x += (mouseRef.current.x * 20 - camera.position.x) * activeDistortionIntensity;
-        camera.position.y += (mouseRef.current.y * 20 - camera.position.y) * activeDistortionIntensity;
-        camera.lookAt(0, 0, 0);
-      }
-      
-      renderer.render(scene, camera);
+
+      cameraRef.current.lookAt(scene.position);
+      rendererRef.current.render(scene, cameraRef.current);
       animationFrameRef.current = requestAnimationFrame(animate);
     };
-    
-    animate();
-    
-    // Add both mouse and touch event listeners
-    if (cameraDistortion) {
-      window.addEventListener('mousemove', handleMouseMove);
-      window.addEventListener('touchmove', handleTouchMove, { passive: true });
-    }
-    
+
     const handleResize = () => {
       if (!cameraRef.current || !rendererRef.current) return;
       
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
+      cameraRef.current.aspect = window.innerWidth / window.innerHeight;
+      cameraRef.current.updateProjectionMatrix();
+      rendererRef.current.setSize(window.innerWidth, window.innerHeight);
     };
-    
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('touchmove', handleTouchMove);
     window.addEventListener('resize', handleResize);
-    
+    animate();
+
     return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('resize', handleResize);
+      
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
       
-      window.removeEventListener('resize', handleResize);
-      window.removeEventListener('mousemove', handleMouseMove);
-      window.removeEventListener('touchmove', handleTouchMove);
-      
-      // Clean up Three.js objects
-      if (pointsRef.current) {
-        scene.remove(pointsRef.current);
-        pointsRef.current.geometry.dispose();
-        (pointsRef.current.material as THREE.Material).dispose();
+      if (rendererRef.current && rendererRef.current.domElement) {
+        rendererRef.current.domElement.remove();
       }
       
-      if (rendererRef.current) {
-        rendererRef.current.dispose();
-      }
+      // Clean up Three.js resources
+      firefliesRef.current.forEach(firefly => {
+        firefly.geometry.dispose();
+        (firefly.material as THREE.Material).dispose();
+        firefly.children.forEach(child => {
+          (child as THREE.Mesh).geometry.dispose();
+          ((child as THREE.Mesh).material as THREE.Material).dispose();
+        });
+      });
     };
-  }, [
-    mobileAdjustedCount, 
-    mobileAdjustedSize, 
-    colors, 
-    enabled, 
-    mobileAdjustedSpeed, 
-    mobileAdjustedSphereRadius, 
-    cameraDistortion, 
-    mobileAdjustedDistortionIntensity,
-    isMobile
-  ]);
+  }, [enabled, mobileAdjustedCount, mobileAdjustedSize, mobileAdjustedSpeed, mobileAdjustedSphereRadius, colors, isMobile, maxDistance]);
 
   return (
     <div 
-      ref={containerRef}
-      className="fixed inset-0 overflow-hidden pointer-events-none z-10"
-      aria-hidden="true"
+      ref={containerRef} 
+      style={{ 
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 10
+      }} 
     />
   );
 };

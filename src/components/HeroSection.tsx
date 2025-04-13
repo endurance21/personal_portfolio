@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowDownCircle, Sparkles, ExternalLink, LampCeiling } from 'lucide-react';
@@ -30,9 +29,23 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveRole((prev) => (prev + 1) % roles.length);
-    }, 1400); // Slower animation (3000ms)
+    }, 1400);
     return () => clearInterval(interval);
   }, []);
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      const offset = 80; // Adjust this value to account for navbar height
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   return (
     <div className="relative min-h-screen flex flex-col justify-center items-center px-4 overflow-hidden">
@@ -79,13 +92,20 @@ const HeroSection = () => {
               Let's build something magical together — clean, scalable, and full of thoughtful craftsmanship.
             </p>
             
-            <div className="flex gap-4">
-              <Button className="bg-indigo-600 hover:bg-indigo-700 text-white border border-indigo-500/20 shadow-lg group">
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button 
+                onClick={() => scrollToSection('testimonials')}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white border border-indigo-500/20 shadow-lg group"
+              >
                 View Projects
                 <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
               </Button>
               
-              <Button variant="outline" className="bg-transparent border border-indigo-300/30 text-indigo-50 hover:bg-indigo-500/20 shadow-md">
+              <Button 
+                onClick={() => scrollToSection('contact')}
+                variant="outline" 
+                className="bg-transparent border border-indigo-300/30 text-indigo-50 hover:bg-indigo-500/20 shadow-md"
+              >
                 Contact Me
               </Button>
             </div>
@@ -97,7 +117,7 @@ const HeroSection = () => {
               <img 
                 src="/personal_portfolio/hero_illustration.svg" 
                 alt="Studio Ghibli style developer in a magical workspace" 
-                className="relative z-10 w-full max-w-md animate-float  shadow-professional rounded-full"
+                className="relative z-10 w-full max-w-md animate-float shadow-professional rounded-full"
               />
               <div className="absolute top-0 right-0 w-8 h-8 text-blue-400 animate-twinkle">
                 <Sparkles className="w-full h-full" />
@@ -113,9 +133,13 @@ const HeroSection = () => {
         </div>
       </div>
       
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <button
+        onClick={() => scrollToSection('testimonials')}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer z-30"
+        aria-label="Scroll to testimonials section"
+      >
         <ArrowDownCircle className="h-8 w-8 text-indigo-400 opacity-80" />
-      </div>
+      </button>
     </div>
   );
 };

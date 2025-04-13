@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { CheckCircle, Clock, Heart, Lightbulb, Sparkles } from 'lucide-react';
 
@@ -45,7 +44,7 @@ const WorkWithMe = () => {
   ];
 
   return (
-    <section className="py-24 px-4 bg-cosmic-gradient relative overflow-hidden">
+    <section id="work-with-me" className="py-24 px-4 bg-cosmic-gradient relative overflow-hidden">
       <div className="absolute top-0 left-0 w-full h-full bg-shimmer bg-200% opacity-5 animate-shimmer"></div>
       <div className="container mx-auto max-w-6xl relative z-10">
         <div className="text-center mb-16">
