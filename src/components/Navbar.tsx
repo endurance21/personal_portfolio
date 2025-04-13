@@ -64,7 +64,7 @@ const Navbar = () => {
               onClick={() => scrollToSection('work-with-me')}
               className="text-magic-twilight hover:text-magic-teal transition-colors"
             >
-              About Me
+              Why me ?
             </button>
             <Button 
               className="magic-button text-sm py-2 flex items-center gap-2"

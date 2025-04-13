@@ -135,9 +135,9 @@ const HeroSection = () => {
       </div>
       
       <button
-        onClick={() => scrollToSection('projects')}
+        onClick={() => scrollToSection('testimonials')}
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer z-30"
-        aria-label="Scroll to projects section"
+        aria-label="Scroll to testimonials section"
       >
         <ArrowDownCircle className="h-8 w-8 text-indigo-400 opacity-80" />
       </button>

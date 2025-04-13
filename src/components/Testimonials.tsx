@@ -94,7 +94,7 @@ const Testimonials = () => {
       role: "Senior Software Engineer",
       company: "Spotify",
       companyIcon: "/personal_portfolio/spotify_dp.svg",
-      testimonial: "Divyanshu improved the p5.sound library with modern architecture and testing tools. Thoughtful, smart, and driven to make a real difference.",
+      testimonial: "Divyanshu improved the p5.sound library with modern architecture and seamless feature integration. Thoughtful, smart, and driven to make a real difference.",
       avatarUrl: "/testimonial-jason.png"
     },
     {
