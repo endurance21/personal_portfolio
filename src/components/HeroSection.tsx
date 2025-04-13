@@ -27,6 +27,10 @@ const HeroSection = () => {
   const [activeRole, setActiveRole] = useState(0);
 
   useEffect(() => {
+    document.title = "Divyanshu Portfolio";
+  }, []);
+
+  useEffect(() => {
     const interval = setInterval(() => {
       setActiveRole((prev) => (prev + 1) % roles.length);
     }, 1700);
