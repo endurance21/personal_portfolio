@@ -21,11 +21,7 @@ const Step = ({ icon, title, description }: StepProps) => (
 
 const WorkWithMe = () => {
   const steps = [
-    {
-      icon: <Clock className="h-6 w-6" />,
-      title: "Available 20 hrs/week",
-      description: "I maintain a dedicated schedule for your project, ensuring consistent progress and availability."
-    },
+
     {
       icon: <Lightbulb className="h-6 w-6" />,
       title: "Engineer first, empath second",

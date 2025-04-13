@@ -4,20 +4,20 @@ import { ArrowDownCircle, Sparkles, ExternalLink, LampCeiling } from 'lucide-rea
 
 const roles = [
   {
-    title: "Microsoft Engineer",
-    description: "Building enterprise-scale solutions",
+    title: "Software Engineer",
+    description: "Building enterprise-scale solutions at Microsoft",
     logo: "/personal_portfolio/microsoft-logo.svg",
     color: "bg-white"
   },
   {
     title: "GSoC Fellow",
-    description: "Open source contributor",
+    description: "Open source contributor at Google Summer of Code",
     logo: "/personal_portfolio/google_white_bg.svg",
     color: "bg-white"
   },
   {
     title: "Freelance Developer",
-    description: "Crafting custom solutions",
+    description: "Crafting custom solutions for clients",
     logo: "/personal_portfolio/freelance-logo.svg",
     color: "bg-white"
   }
@@ -89,7 +89,8 @@ const HeroSection = () => {
             </div>
             
             <p className="text-lg md:text-xl text-indigo-50/90 mb-8">
-              Let's build something magical together — clean, scalable, and full of thoughtful craftsmanship.
+            A Software engineer who cares deeply about building fast, reliable systems that solve real problems.
+            I value ownership, learning, and delivering thoughtful solutions that actually make a difference.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
