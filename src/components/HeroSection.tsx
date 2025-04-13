@@ -18,7 +18,7 @@ const roles = [
   {
     title: "Freelance Developer",
     description: "Crafting custom solutions for clients",
-    logo: "/personal_portfolio/freelance-logo.svg",
+    logo: "/personal_portfolio/freelance_dp.png",
     color: "bg-white"
   }
 ];
@@ -29,7 +29,7 @@ const HeroSection = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveRole((prev) => (prev + 1) % roles.length);
-    }, 1400);
+    }, 1700);
     return () => clearInterval(interval);
   }, []);
 
