@@ -63,14 +63,14 @@ const HeroSection = () => {
               Hi, I'm <span className="text-indigo-400">Divyanshu</span>
             </h1>
             
-            <div className="h-24 mb-6 overflow-hidden relative">
+            <div className="h-32 sm:h-28 mb-6 overflow-hidden relative">
               {roles.map((role, index) => (
                 <div 
                   key={index}
                   className={`absolute w-full transition-all duration-500 ease-in-out ${
                     index === activeRole 
                       ? "top-0 opacity-100" 
-                      : "top-16 opacity-0"
+                      : "top-24 opacity-0"
                   }`}
                 >
                   <div className="flex items-center gap-3 mb-2">
@@ -112,13 +112,13 @@ const HeroSection = () => {
             </div>
           </div>
           
-          <div className="w-full lg:w-1/2 order-1 lg:order-2 flex justify-center">
-            <div className="relative">
+          <div className="hidden sm:w-full sm:flex lg:w-1/2 order-1 lg:order-2 justify-center">
+            <div className="relative w-full">
               <div className="absolute inset-0 bg-indigo-400/10 rounded-full blur-3xl transform scale-75"></div>
               <img 
                 src="/personal_portfolio/hero_illustration.svg" 
                 alt="Studio Ghibli style developer in a magical workspace" 
-                className="relative z-10 w-full max-w-md animate-float shadow-professional rounded-full"
+                className="relative z-10 w-full max-w-md mx-auto animate-float shadow-professional rounded-full"
               />
               <div className="absolute top-0 right-0 w-8 h-8 text-blue-400 animate-twinkle">
                 <Sparkles className="w-full h-full" />
