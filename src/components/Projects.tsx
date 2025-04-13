@@ -203,10 +203,9 @@ const Projects = () => {
       tags: [
         "JavaScript",
         "Web Audio API",
-        "Jest",
+        "ECMAScript Modules",
         "GitHub Actions",
-        "Documentation",
-        "Performance",
+        "HeadLess Testing using karma.js",
         "Open Source"
       ],
       link: "https://p5js.org/reference/#/libraries/p5.sound",

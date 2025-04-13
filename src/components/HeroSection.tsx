@@ -95,7 +95,7 @@ const HeroSection = () => {
             
             <div className="flex flex-col sm:flex-row gap-4">
               <Button 
-                onClick={() => scrollToSection('testimonials')}
+                onClick={() => scrollToSection('projects')}
                 className="bg-indigo-600 hover:bg-indigo-700 text-white border border-indigo-500/20 shadow-lg group"
               >
                 View Projects
@@ -135,9 +135,9 @@ const HeroSection = () => {
       </div>
       
       <button
-        onClick={() => scrollToSection('testimonials')}
+        onClick={() => scrollToSection('projects')}
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer z-30"
-        aria-label="Scroll to testimonials section"
+        aria-label="Scroll to projects section"
       >
         <ArrowDownCircle className="h-8 w-8 text-indigo-400 opacity-80" />
       </button>
