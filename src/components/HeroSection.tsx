@@ -138,7 +138,7 @@ const HeroSection = () => {
       >
         <div className="relative">
           <div className="absolute inset-0 bg-indigo-400/20 rounded-full blur-xl group-hover:bg-indigo-400/30 transition-all"></div>
-          <ArrowDownCircle className="h-16 w-16 text-indigo-400 group-hover:text-indigo-300 transition-colors relative z-10 drop-shadow-lg" strokeWidth={2} />
+          <ArrowDownCircle className="h-10 w-10 md:h-16 md:w-16 text-indigo-400 group-hover:text-indigo-300 transition-colors relative z-10 drop-shadow-lg" strokeWidth={2} />
         </div>
       </button>
     </div>
