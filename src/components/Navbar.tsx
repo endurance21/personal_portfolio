@@ -55,10 +55,10 @@ const Navbar = () => {
               Projects
             </button>
             <button 
-              onClick={() => scrollToSection('tech-stack')}
+              onClick={() => scrollToSection('testimonials')}
               className="text-magic-twilight hover:text-magic-teal transition-colors"
             >
-              Tech Stack
+              Testimonials
             </button>
             <button 
               onClick={() => scrollToSection('work-with-me')}
@@ -94,10 +94,10 @@ const Navbar = () => {
               Projects
             </button>
             <button 
-              onClick={() => scrollToSection('tech-stack')}
+              onClick={() => scrollToSection('testimonials')}
               className="text-magic-twilight hover:text-magic-teal transition-colors py-2"
             >
-              Tech Stack
+              Testimonials
             </button>
             <button 
               onClick={() => scrollToSection('work-with-me')}

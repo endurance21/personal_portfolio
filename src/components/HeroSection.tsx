@@ -4,21 +4,15 @@ import { ArrowDownCircle, Sparkles, ExternalLink, LampCeiling } from 'lucide-rea
 
 const roles = [
   {
-    title: "Software Engineer",
-    description: "Building enterprise-scale solutions at Microsoft",
-    logo: "/personal_portfolio/microsoft-logo.svg",
-    color: "bg-white"
-  },
-  {
     title: "GSoC Fellow",
     description: "Open source contributor at Google Summer of Code",
-    logo: "/personal_portfolio/google_white_bg.svg",
+    logo: "/google_white_bg.svg",
     color: "bg-white"
   },
   {
     title: "Freelance Developer",
     description: "Crafting custom solutions for clients",
-    logo: "/personal_portfolio/freelance_dp.png",
+    logo: "/freelance_dp.png",
     color: "bg-white"
   }
 ];
@@ -27,7 +21,7 @@ const HeroSection = () => {
   const [activeRole, setActiveRole] = useState(0);
 
   useEffect(() => {
-    document.title = "Divyanshu Portfolio";
+    document.title = "Full Stack Software Developer";
   }, []);
 
   useEffect(() => {
@@ -93,8 +87,7 @@ const HeroSection = () => {
             </div>
             
             <p className="text-lg md:text-xl text-indigo-50/90 mb-8">
-            A Software engineer who cares deeply about building fast, reliable systems that solve real problems.
-            I value ownership, learning, and delivering thoughtful solutions that actually make a difference.
+            Full-stack developer specializing in MERN and Java Spring Boot. I turn your ideas into scalable, production-ready applications. Fast delivery, clean code, and ongoing support—your success is my priority.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4">
@@ -120,7 +113,7 @@ const HeroSection = () => {
             <div className="relative w-full">
               <div className="absolute inset-0 bg-indigo-400/10 rounded-full blur-3xl transform scale-75"></div>
               <img 
-                src="/personal_portfolio/hero_illustration.svg" 
+                src="/hero_illustration.svg" 
                 alt="Studio Ghibli style developer in a magical workspace" 
                 className="relative z-10 w-full max-w-md mx-auto animate-float shadow-professional rounded-full"
               />
@@ -139,11 +132,14 @@ const HeroSection = () => {
       </div>
       
       <button
-        onClick={() => scrollToSection('testimonials')}
-        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer z-30"
-        aria-label="Scroll to testimonials section"
+        onClick={() => scrollToSection('top-skills')}
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer z-30 group"
+        aria-label="Scroll to top skills section"
       >
-        <ArrowDownCircle className="h-8 w-8 text-indigo-400 opacity-80" />
+        <div className="relative">
+          <div className="absolute inset-0 bg-indigo-400/20 rounded-full blur-xl group-hover:bg-indigo-400/30 transition-all"></div>
+          <ArrowDownCircle className="h-16 w-16 text-indigo-400 group-hover:text-indigo-300 transition-colors relative z-10 drop-shadow-lg" strokeWidth={2} />
+        </div>
       </button>
     </div>
   );

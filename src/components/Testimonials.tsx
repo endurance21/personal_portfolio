@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { QuoteIcon } from 'lucide-react';
+import { QuoteIcon, Star } from 'lucide-react';
 
 interface TestimonialProps {
   name: string;
@@ -30,7 +30,12 @@ const getGradientColor = (name: string) => {
   return colors[index % colors.length];
 };
 
-const TestimonialCard = ({ name, role, company, companyIcon, testimonial, avatarUrl }: TestimonialProps) => {
+interface TestimonialCardProps extends TestimonialProps {
+  rating?: number;
+  platform?: string;
+}
+
+const TestimonialCard = ({ name, role, company, companyIcon, testimonial, avatarUrl, rating, platform }: TestimonialCardProps) => {
   const initials = getInitials(name);
   const [gradientStart, gradientEnd] = getGradientColor(name);
 
@@ -73,6 +78,17 @@ const TestimonialCard = ({ name, role, company, companyIcon, testimonial, avatar
               )}
               <p className="text-xs text-magic-twilight/70">{company}</p>
             </div>
+            <div className="flex items-center gap-1 mt-2">
+              {[...Array(5)].map((_, i) => (
+                <Star 
+                  key={i} 
+                  className={`w-4 h-4 ${i < (rating || 5) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}`} 
+                />
+              ))}
+              {platform && (
+                <span className="text-xs text-magic-twilight/70 ml-1">• {platform}</span>
+              )}
+            </div>
           </div>
         </div>
         
@@ -93,33 +109,37 @@ const Testimonials = () => {
       name: "Jason Sigal",
       role: "Senior Software Engineer",
       company: "Spotify",
-      companyIcon: "/personal_portfolio/spotify_dp.svg",
+      companyIcon: "/spotify_dp.svg",
       testimonial: "Divyanshu improved the p5.sound library with modern architecture and seamless feature integration. Thoughtful, smart, and driven to make a real difference.",
-      avatarUrl: "/testimonial-jason.png"
+      avatarUrl: "/testimonial-jason.png",
+      rating: 5
     },
     {
       name: "Mayank",
       role: "Co-founder & CTO",
       company: "Propel",
-      companyIcon: "/personal_portfolio/propel_dp.svg",
+      companyIcon: "/propel_dp.svg",
       testimonial: "Brings architectural clarity, ships on time, and deeply cares.",
-      avatarUrl: "/testimonial-mayank.png"
+      avatarUrl: "/testimonial-mayank.png",
+      rating: 5
     },
     {
-      name: "Aman Singhla",
+      name: "Aman Singhla ",
       role: "Founder",
       company: "Cure.link",
-      companyIcon: "/personal_portfolio/cure_link_dp.jpg",
+      companyIcon: "/cure_link_dp.jpg",
       testimonial: "Backend systems built with precision. Doesn't disappear after delivery — stays to make it better.",
-      avatarUrl: "/testimonial-aman.png"
+      avatarUrl: "/testimonial-aman.png",
+      rating: 5
     },
     {
       name: "Omar Siha",
       role: "Founder",
       company: "Omni-Social",
-      companyIcon: "/personal_portfolio/omni_social_dp.webp",
+      companyIcon: "/omni_social_dp.webp",
       testimonial: "Integrated complex social APIs with zero fuss. Fast, clean, and reliable.",
-      avatarUrl: "/testimonial-omar.png"
+      avatarUrl: "/testimonial-omar.png",
+      rating: 5
     }
   ];
 
@@ -131,7 +151,7 @@ const Testimonials = () => {
           <div className="w-24 h-1 bg-magic-spark mx-auto rounded-full"></div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
             <div key={index} className="transform hover:-translate-y-2 transition-transform duration-300">
               <TestimonialCard {...testimonial} />

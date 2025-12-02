@@ -4,7 +4,7 @@ import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/HeroSection';
 import Testimonials from '@/components/Testimonials';
 import Projects from '@/components/Projects';
-import TechStack from '@/components/TechStack';
+import TopSkills from '@/components/TopSkills';
 import WorkWithMe from '@/components/WorkWithMe';
 import CallToAction from '@/components/CallToAction';
 import Footer from '@/components/Footer';
@@ -29,9 +29,9 @@ const Index = () => {
       />
       <Navbar />
       <HeroSection />
+      <TopSkills />
       <Testimonials />
       <Projects />
-      <TechStack />
       <WorkWithMe />
       <CallToAction />
       <Footer />
