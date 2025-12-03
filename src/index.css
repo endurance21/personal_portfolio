@@ -7,33 +7,34 @@
 
 @layer base {
   :root {
-    --background: 222 47% 11%;
-    --foreground: 210 40% 98%;
+    /* Theme 1: Monochrome – black/white, very minimal */
+    --background: 220 13% 5%;
+    --foreground: 0 0% 98%;
 
-    --card: 222 47% 13%;
-    --card-foreground: 210 40% 98%;
+    --card: 220 13% 8%;
+    --card-foreground: 0 0% 98%;
 
-    --popover: 222 47% 13%;
-    --popover-foreground: 210 40% 98%;
+    --popover: 220 13% 8%;
+    --popover-foreground: 0 0% 98%;
 
-    --primary: 217 91% 60%;
-    --primary-foreground: 0 0% 100%;
+    --primary: 0 0% 100%; /* white accent on dark */
+    --primary-foreground: 222 13% 10%;
 
-    --secondary: 215 28% 17%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: 220 10% 12%;
+    --secondary-foreground: 0 0% 98%;
 
-    --muted: 215 28% 20%;
-    --muted-foreground: 215 20% 65%;
+    --muted: 220 10% 16%;
+    --muted-foreground: 220 10% 70%;
 
-    --accent: 217 91% 60%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 220 15% 65%;
+    --accent-foreground: 0 0% 5%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 215 28% 20%;
-    --input: 215 28% 20%;
-    --ring: 217 91% 60%;
+    --border: 220 10% 18%;
+    --input: 220 10% 18%;
+    --ring: 0 0% 100%;
 
     --radius: 0.75rem;
 
@@ -47,13 +48,92 @@
     --sidebar-ring: 0 0% 59.8%;
   }
 
+  [data-theme="emerald"] {
+    --background: 200 20% 8%;
+    --foreground: 210 40% 98%;
+
+    --card: 200 20% 10%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 200 20% 10%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 160 84% 39%; /* emerald-500 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 200 15% 15%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 200 15% 18%;
+    --muted-foreground: 215 20% 65%;
+
+    --accent: 160 84% 39%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 200 15% 18%;
+    --input: 200 15% 18%;
+    --ring: 160 84% 39%;
+  }
+
+  [data-theme="red"] {
+    --background: 0 0% 4%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 0 84% 60%; /* red-500 */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 0 0% 10%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 0 72% 51%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 0 84% 60%;
+  }
+
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-slate-950 text-slate-50 font-sans antialiased;
-    background: linear-gradient(to bottom, #0f172a, #1e293b);
+    @apply bg-black text-slate-50 font-sans antialiased;
+    background:
+      radial-gradient(circle at top, rgba(255,255,255,0.04) 0, transparent 60%),
+      radial-gradient(circle at bottom, rgba(148,163,184,0.15) 0, transparent 55%),
+      #020617;
+  }
+
+  [data-theme="emerald"] body {
+    @apply bg-zinc-950 text-zinc-50;
+    background:
+      radial-gradient(circle at top, rgba(16,185,129,0.28) 0, transparent 55%),
+      radial-gradient(circle at bottom right, rgba(45,212,191,0.24) 0, transparent 55%),
+      #020617;
+  }
+
+  [data-theme="red"] body {
+    @apply bg-black text-red-50;
+    background:
+      radial-gradient(circle at top, rgba(220,38,38,0.6) 0, transparent 60%),
+      radial-gradient(circle at bottom, rgba(185,28,28,0.4) 0, transparent 50%),
+      #000000;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -62,6 +142,63 @@
 
   .professional-card {
     @apply bg-slate-900/50 backdrop-blur-sm border border-slate-800/50 rounded-xl shadow-lg transition-all duration-300 hover:border-slate-700/50 hover:shadow-xl;
+  }
+
+  [data-theme="emerald"] .professional-card {
+    @apply bg-zinc-900/50 backdrop-blur-sm border border-zinc-800/50 rounded-xl shadow-lg transition-all duration-300 hover:border-emerald-500/30 hover:shadow-xl;
+  }
+
+  [data-theme="red"] .professional-card {
+    @apply bg-black/80 backdrop-blur-sm border border-red-600/50 rounded-xl shadow-lg transition-all duration-300 hover:border-red-500/80 hover:shadow-xl;
+  }
+
+  /* Hero background orbs & glows per theme */
+  .hero-orb-1 {
+    background: radial-gradient(circle at top, rgba(148,163,184,0.3), transparent 60%);
+  }
+
+  .hero-orb-2 {
+    background: radial-gradient(circle at bottom, rgba(148,163,184,0.22), transparent 65%);
+  }
+
+  .hero-image-glow {
+    background: radial-gradient(circle at center, rgba(255,255,255,0.08), transparent 70%);
+  }
+
+  .hero-scroll-glow {
+    background: radial-gradient(circle, rgba(148,163,184,0.35) 0%, transparent 70%);
+  }
+
+  [data-theme="emerald"] .hero-orb-1 {
+    background: radial-gradient(circle at top right, rgba(16,185,129,0.55), transparent 65%);
+  }
+
+  [data-theme="emerald"] .hero-orb-2 {
+    background: radial-gradient(circle at bottom left, rgba(34,197,94,0.4), transparent 65%);
+  }
+
+  [data-theme="emerald"] .hero-image-glow {
+    background: radial-gradient(circle at center, rgba(45,212,191,0.5), transparent 70%);
+  }
+
+  [data-theme="emerald"] .hero-scroll-glow {
+    background: radial-gradient(circle, rgba(16,185,129,0.7) 0%, transparent 70%);
+  }
+
+  [data-theme="red"] .hero-orb-1 {
+    background: radial-gradient(circle at top right, rgba(220,38,38,0.7), transparent 60%);
+  }
+
+  [data-theme="red"] .hero-orb-2 {
+    background: radial-gradient(circle at bottom left, rgba(185,28,28,0.8), transparent 60%);
+  }
+
+  [data-theme="red"] .hero-image-glow {
+    background: radial-gradient(circle at center, rgba(239,68,68,0.6), transparent 70%);
+  }
+
+  [data-theme="red"] .hero-scroll-glow {
+    background: radial-gradient(circle, rgba(220,38,38,0.9) 0%, transparent 70%);
   }
 
   .section-title {

@@ -1,105 +1,265 @@
 import React, { useState } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Code2, Database, HeartPulse, Share2, Rocket, Github } from 'lucide-react';
+import { ExternalLink, Github, ArrowRight } from 'lucide-react';
 
 interface ProjectProps {
   title: string;
   description: string;
-  iconUrl?: string;
+  imageUrl?: string;
   tags: string[];
   link?: string;
   githubLink?: string;
 }
 
-const getProjectIcon = (title: string) => {
-  const iconMap: { [key: string]: React.ReactNode } = {
-    'DialWorks': <Share2 className="w-6 h-6 text-blue-400" />,
-    'TEJAS': <Database className="w-6 h-6 text-blue-400" />,
-    'Cure.link': <HeartPulse className="w-6 h-6 text-blue-400" />,
-    'Omni-Social': <Share2 className="w-6 h-6 text-blue-400" />,
-    'Propel': <Rocket className="w-6 h-6 text-blue-400" />,
-    'Firefly-react': <Code2 className="w-6 h-6 text-blue-400" />,
-  };
-
-  return iconMap[title] || <Code2 className="w-6 h-6 text-blue-400" />;
-};
-
-const ProjectCard = ({ title, description, iconUrl, tags, link, githubLink }: ProjectProps) => {
-  const [showFallback, setShowFallback] = useState(!iconUrl);
-  const projectIcon = getProjectIcon(title);
+// Mobile Card - Compact and minimal
+const ProjectCardMobile = ({ title, description, imageUrl, tags, link, githubLink }: ProjectProps) => {
+  const [showAllTags, setShowAllTags] = useState(false);
+  const displayedTags = showAllTags ? tags : tags.slice(0, 2);
+  const remainingCount = tags.length - 2;
 
   return (
-    <Card className="professional-card h-full group hover:scale-[1.02] transition-all duration-300">
-      <CardContent className="p-6">
-        <div className="flex items-start gap-4 mb-4">
-          <div className="w-12 h-12 flex-shrink-0 rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center justify-center group-hover:border-blue-500/50 transition-colors">
-            {!showFallback && iconUrl ? (
-              <img 
-                src={iconUrl} 
-                alt={title} 
-                className="w-full h-full object-cover rounded-lg"
-                onError={() => setShowFallback(true)}
-              />
-            ) : (
-              <div className="flex items-center justify-center w-full h-full">
-                {projectIcon}
-              </div>
-            )}
-          </div>
-          
-          <div className="flex-grow min-w-0">
-            <div className="flex items-start justify-between gap-2 mb-2">
-              <h3 className="font-display font-semibold text-lg text-slate-50 group-hover:text-blue-400 transition-colors">
-                {title}
-              </h3>
-              <div className="flex gap-2 flex-shrink-0">
-                {link && (
-                  <a 
-                    href={link} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-slate-500 hover:text-blue-400 transition-colors"
-                    aria-label={`Visit ${title} website`}
-                  >
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                )}
-                {githubLink && (
-                  <a 
-                    href={githubLink} 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="text-slate-500 hover:text-blue-400 transition-colors"
-                    aria-label={`View ${title} on GitHub`}
-                  >
-                    <Github className="h-4 w-4" />
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
+    <div className="group relative overflow-hidden rounded-none md:rounded-xl bg-slate-900/50 border-x-0 md:border-x border-y border-slate-800/50 hover:border-[hsl(var(--primary)/0.5)] transition-all mb-6 w-full">
+      {/* Content */}
+      <div className="p-6">
+        <h3 className="text-xl font-display font-semibold text-white mb-2 group-hover:text-[hsl(var(--primary))] transition-colors">
+          {title}
+        </h3>
         
-        <p className="text-slate-400 text-sm mb-4 leading-relaxed">{description}</p>
+        <p className="text-slate-400 text-sm mb-4 leading-relaxed line-clamp-2">
+          {description}
+        </p>
         
-        <div className="flex flex-wrap gap-2">
-          {tags.map((tag, index) => (
+        {/* Tags - Minimal */}
+        <div className="flex flex-wrap gap-2 mb-4">
+          {displayedTags.map((tag, idx) => (
             <Badge 
-              key={index} 
-              className="bg-slate-800/50 text-slate-300 hover:bg-slate-800 border border-slate-700/50 text-xs font-normal px-2.5 py-0.5"
+              key={idx} 
+              className="bg-[hsl(var(--primary)/0.15)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.3)] text-xs font-medium px-2.5 py-1"
             >
               {tag}
             </Badge>
           ))}
+          {tags.length > 2 && !showAllTags && (
+            <Badge 
+              onClick={() => setShowAllTags(true)}
+              className="bg-slate-800/50 text-slate-400 border border-slate-700/50 text-xs font-medium px-2.5 py-1 cursor-pointer hover:bg-slate-700/50 transition-all"
+            >
+              +{remainingCount}
+            </Badge>
+          )}
+          {showAllTags && tags.length > 2 && (
+            <Badge 
+              onClick={() => setShowAllTags(false)}
+              className="bg-slate-800/50 text-slate-400 border border-slate-700/50 text-xs font-medium px-2.5 py-1 cursor-pointer hover:bg-slate-700/50 transition-all"
+            >
+              Less
+            </Badge>
+          )}
         </div>
-      </CardContent>
-    </Card>
+        
+        {/* Links */}
+        <div className="flex items-center gap-3">
+          {link && (
+            <a 
+              href={link} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-[hsl(var(--primary))] text-white rounded-lg text-sm font-medium hover:bg-[hsl(var(--primary)/0.9)] transition-all active:scale-95"
+              aria-label={`Visit ${title} website`}
+            >
+              View
+              <ArrowRight className="h-3.5 w-3.5" />
+            </a>
+          )}
+          {githubLink && (
+            <a 
+              href={githubLink} 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="text-slate-500 hover:text-[hsl(var(--primary))] transition-colors"
+              aria-label={`View ${title} on GitHub`}
+            >
+              <Github className="h-5 w-5" />
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Desktop Showcase - Full width with alternating layouts
+const ProjectShowcaseDesktop = ({ title, description, imageUrl, tags, link, githubLink, index = 0 }: ProjectProps & { index?: number }) => {
+  const [imageError, setImageError] = useState(false);
+  const [showAllTags, setShowAllTags] = useState(false);
+  const isEven = index % 2 === 0;
+  const displayedTags = showAllTags ? tags : tags.slice(0, 3);
+  const remainingCount = tags.length - 3;
+
+  return (
+    <div className="group relative overflow-hidden rounded-xl md:rounded-2xl mb-10 sm:mb-12 md:mb-12">
+      <div className={`flex flex-col ${isEven ? 'md:flex-row' : 'md:flex-row-reverse'} items-stretch min-h-[450px] sm:min-h-[500px] md:min-h-[600px]`}>
+        {/* Image Section */}
+        <div className="relative w-full md:w-1/2 min-h-[300px] sm:min-h-[350px] md:min-h-full">
+          {imageUrl && !imageError ? (
+            <>
+              <img 
+                src={imageUrl} 
+                alt={title}
+                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                onError={() => setImageError(true)}
+              />
+              {isEven ? (
+                <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent hidden md:block" />
+              ) : (
+                <div className="absolute inset-0 bg-gradient-to-l from-black/70 via-black/50 to-transparent hidden md:block" />
+              )}
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="text-4xl sm:text-5xl md:text-6xl font-bold text-slate-700 opacity-50">{title.charAt(0)}</div>
+              </div>
+            </div>
+          )}
+          
+          {/* Decorative elements */}
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none hidden md:block">
+            <div className={`absolute ${isEven ? 'top-4 right-4' : 'top-4 left-4'} w-24 h-24 md:w-32 md:h-32 bg-[hsl(var(--primary)/0.1)] rounded-full blur-3xl group-hover:bg-[hsl(var(--primary)/0.2)] transition-all`} />
+          </div>
+        </div>
+
+        {/* Content Section */}
+        <div className={`relative w-full md:w-1/2 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-10 sm:p-12 md:p-12 lg:p-16 flex flex-col justify-center ${isEven ? 'md:border-l-2 border-slate-800' : 'md:border-r-2 border-slate-800'}`}>
+          <div className="max-w-xl w-full">
+            {/* Tags */}
+            <div className="flex flex-wrap gap-3 sm:gap-3 mb-5 sm:mb-6">
+              {displayedTags.map((tag, idx) => (
+                <Badge 
+                  key={idx} 
+                  className="bg-[hsl(var(--primary)/0.15)] text-[hsl(var(--primary))] border border-[hsl(var(--primary)/0.3)] text-xs sm:text-sm font-medium px-3.5 py-2 sm:px-4 sm:py-2 hover:bg-[hsl(var(--primary)/0.25)] transition-colors"
+                >
+                  {tag}
+                </Badge>
+              ))}
+              {tags.length > 3 && !showAllTags && (
+                <Badge 
+                  onClick={() => setShowAllTags(true)}
+                  className="bg-slate-800/50 text-slate-400 border border-slate-700/50 text-xs sm:text-sm font-medium px-3.5 py-2 sm:px-4 sm:py-2 cursor-pointer hover:bg-slate-700/50 hover:text-slate-300 hover:border-[hsl(var(--primary)/0.5)] transition-all"
+                >
+                  +{remainingCount} more
+                </Badge>
+              )}
+              {showAllTags && tags.length > 3 && (
+                <Badge 
+                  onClick={() => setShowAllTags(false)}
+                  className="bg-slate-800/50 text-slate-400 border border-slate-700/50 text-xs sm:text-sm font-medium px-3.5 py-2 sm:px-4 sm:py-2 cursor-pointer hover:bg-slate-700/50 hover:text-slate-300 hover:border-[hsl(var(--primary)/0.5)] transition-all"
+                >
+                  Show less
+                </Badge>
+              )}
+            </div>
+            
+            {/* Title */}
+            <h3 className="text-3xl sm:text-4xl md:text-4xl lg:text-5xl xl:text-6xl font-display font-bold text-white mb-5 sm:mb-6 md:mb-6 group-hover:text-[hsl(var(--primary))] transition-colors leading-tight">
+              {title}
+            </h3>
+            
+            {/* Description */}
+            <p className="text-slate-300 text-base sm:text-lg md:text-xl lg:text-xl mb-8 sm:mb-10 md:mb-10 leading-relaxed">
+              {description}
+            </p>
+            
+            {/* Links */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-4">
+              {link && (
+                <a 
+                  href={link} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-6 sm:py-3 bg-[hsl(var(--primary))] text-white rounded-lg text-base sm:text-base font-medium hover:bg-[hsl(var(--primary)/0.9)] transition-all active:scale-95 sm:hover:scale-105 shadow-lg hover:shadow-xl group/link"
+                  aria-label={`Visit ${title} website`}
+                >
+                  View Live
+                  <ArrowRight className="h-4 w-4 group-hover/link:translate-x-1 transition-transform" />
+                </a>
+              )}
+              {githubLink && (
+                <a 
+                  href={githubLink} 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:px-6 sm:py-3 bg-slate-800/50 border border-slate-700 text-slate-300 rounded-lg text-base sm:text-base font-medium hover:bg-slate-800 hover:text-white hover:border-[hsl(var(--primary)/0.5)] transition-all active:scale-95"
+                  aria-label={`View ${title} on GitHub`}
+                >
+                  <Github className="h-4 w-4" />
+                  Code
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Decorative corner accent */}
+          <div className={`absolute ${isEven ? 'top-0 right-0' : 'top-0 left-0'} w-20 h-20 md:w-32 md:h-32 bg-[hsl(var(--primary)/0.05)] rounded-bl-full md:rounded-none ${isEven ? 'md:rounded-tl-full' : 'md:rounded-tr-full'} opacity-0 group-hover:opacity-100 transition-opacity duration-500 hidden md:block`} />
+        </div>
+      </div>
+
+      {/* Hover overlay effect */}
+      <div className="absolute inset-0 bg-[hsl(var(--primary)/0.03)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+    </div>
   );
 };
 
 const Projects = () => {
   const projects = [
+    {
+      title: "Omni-Social",
+      description: "Node.js dashboard integrating all social platforms into one unified interface. MERN social-app MVP with 5-star rating from client.",
+      imageUrl: "/omni_social_dp.webp",
+      tags: [
+        "React",
+        "TypeScript",
+        "MongoDB",
+        "OAuth2",
+        "REST APIs",
+        "Webhooks",
+        "Rate Limiting"
+      ],
+      link: "https://omnisocialapp.com/",
+      githubLink: "https://github.com/yourusername/omni-social"
+    },
+    {
+      title: "Cure.link",
+      description: "Healthcare comms infrastructure with reliable async backend processing and HIPAA compliance.",
+      imageUrl: "/cure_link_dp.jpg",
+      tags: [
+        "Node.js",
+        "TypeScript",
+        "PostgreSQL",
+        "Redis",
+        "AWS Lambda",
+        "Serverless",
+        "HIPAA Compliance"
+      ],
+      link: "https://www.cure.link/",
+      githubLink: "https://github.com/yourusername/cure-link"
+    },
+    {
+      title: "Propel",
+      description: "Clean scalable SaaS backend architecture designed for growth and flexibility.",
+      imageUrl: "/propel_dp.svg",
+      tags: [
+        "Node.js",
+        "TypeScript",
+        "PostgreSQL",
+        "Redis",
+        "Docker",
+        "Kubernetes",
+        "CI/CD"
+      ],
+      link: "https://www.trypropel.ai/?utm_source=linkedin&utm_medium=OfficialHandle&utm_campaign=WebsiteLink",
+      githubLink: "https://github.com/yourusername/propel"
+    },
     {
       title: "DialWorks",
       description: "Uber for sales reps, powered by WebSockets for real-time communication.",
@@ -130,84 +290,33 @@ const Projects = () => {
       ],
       link: "https://www.nobrokerhood.com/",
       githubLink: "https://github.com/yourusername/tejas"
-    },
-    {
-      title: "Cure.link",
-      description: "Healthcare comms infrastructure with reliable async backend processing.",
-      tags: [
-        "Node.js",
-        "TypeScript",
-        "PostgreSQL",
-        "Redis",
-        "AWS Lambda",
-        "Serverless",
-        "HIPAA Compliance"
-      ],
-      link: "https://www.cure.link/",
-      githubLink: "https://github.com/yourusername/cure-link"
-    },
-    {
-      title: "Omni-Social",
-      description: "Node.js dashboard integrating all social platforms into one unified interface.",
-      tags: [
-        "React",
-        "TypeScript",
-        "MongoDB",
-        "OAuth2",
-        "REST APIs",
-        "Webhooks",
-        "Rate Limiting"
-      ],
-      link: "https://omnisocialapp.com/",
-      githubLink: "https://github.com/yourusername/omni-social"
-    },
-    {
-      title: "Propel",
-      description: "Clean scalable SaaS backend architecture designed for growth and flexibility.",
-      tags: [
-        "Node.js",
-        "TypeScript",
-        "PostgreSQL",
-        "Redis",
-        "Docker",
-        "Kubernetes",
-        "CI/CD"
-      ],
-      link: "https://www.trypropel.ai/?utm_source=linkedin&utm_medium=OfficialHandle&utm_campaign=WebsiteLink",
-      githubLink: "https://github.com/yourusername/propel"
-    },
-    {
-      title: "Firefly-react",
-      description: "npm package for magical React animations that delight users.",
-      iconUrl: "/project-firefly.png",
-      tags: [
-        "React",
-        "TypeScript",
-        "CSS-in-JS",
-        "Webpack",
-        "Jest",
-        "Storybook",
-        "Open Source"
-      ],
-      link: "https://www.npmjs.com/package/firefly-react",
-      githubLink: "https://github.com/yourusername/firefly-react"
     }
   ];
 
   return (
-    <section id="projects" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-slate-950">
-      <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-12 sm:mb-16">
-          <h2 className="section-title">Projects</h2>
-          <p className="section-subtitle">
+    <section id="projects" className="py-16 sm:py-20 md:py-24 lg:py-28 px-0 sm:px-4 md:px-6 lg:px-8 bg-slate-950">
+      <div className="container mx-auto max-w-7xl">
+        <div className="text-center mb-12 sm:mb-16 md:mb-20 px-4 sm:px-0">
+          <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-slate-50 mb-4 sm:mb-5">Projects</h2>
+          <p className="text-sm sm:text-base md:text-lg text-slate-400 max-w-2xl mx-auto">
             Each project represents a journey into solving real-world problems with technical excellence and attention to detail.
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Mobile: Compact Cards */}
+        <div className="md:hidden space-y-6">
           {projects.map((project, index) => (
             <div key={index} className="animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
-              <ProjectCard {...project} />
+              <ProjectCardMobile {...project} />
+            </div>
+          ))}
+        </div>
+        
+        {/* Desktop: Full Width Showcase */}
+        <div className="hidden md:block space-y-0">
+          {projects.map((project, index) => (
+            <div key={index} className="animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+              <ProjectShowcaseDesktop {...project} index={index} />
             </div>
           ))}
         </div>
