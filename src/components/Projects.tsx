@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Sparkles, Code2, Database, HeartPulse, Share2, Rocket, Package, Github } from 'lucide-react';
+import { ExternalLink, Code2, Database, HeartPulse, Share2, Rocket, Github } from 'lucide-react';
 
 interface ProjectProps {
   title: string;
@@ -14,16 +14,15 @@ interface ProjectProps {
 
 const getProjectIcon = (title: string) => {
   const iconMap: { [key: string]: React.ReactNode } = {
-    'DialWorks': <Share2 className="w-8 h-8 text-magic-spark" />,
-    'TEJAS': <Database className="w-8 h-8 text-magic-spark" />,
-    'Cure.link': <HeartPulse className="w-8 h-8 text-magic-spark" />,
-    'Omni-Social': <Share2 className="w-8 h-8 text-magic-spark" />,
-    'Propel': <Rocket className="w-8 h-8 text-magic-spark" />,
-    'Firefly-react': <Sparkles className="w-8 h-8 text-magic-spark" />,
-    'GSoC @ Google': <Github className="w-8 h-8 text-magic-spark" />,
+    'DialWorks': <Share2 className="w-6 h-6 text-blue-400" />,
+    'TEJAS': <Database className="w-6 h-6 text-blue-400" />,
+    'Cure.link': <HeartPulse className="w-6 h-6 text-blue-400" />,
+    'Omni-Social': <Share2 className="w-6 h-6 text-blue-400" />,
+    'Propel': <Rocket className="w-6 h-6 text-blue-400" />,
+    'Firefly-react': <Code2 className="w-6 h-6 text-blue-400" />,
   };
 
-  return iconMap[title] || <Code2 className="w-8 h-8 text-magic-spark" />;
+  return iconMap[title] || <Code2 className="w-6 h-6 text-blue-400" />;
 };
 
 const ProjectCard = ({ title, description, iconUrl, tags, link, githubLink }: ProjectProps) => {
@@ -31,15 +30,15 @@ const ProjectCard = ({ title, description, iconUrl, tags, link, githubLink }: Pr
   const projectIcon = getProjectIcon(title);
 
   return (
-    <Card className="magic-card h-full overflow-hidden group hover:scale-[1.02] transition-all duration-300">
-      <CardContent className="p-6 relative z-10">
-        <div className="flex items-start gap-4">
-          <div className="w-16 h-16 flex-shrink-0 rounded-xl overflow-hidden bg-gradient-to-br from-magic-navy/50 to-magic-violet/30 border border-magic-violet/30 flex items-center justify-center">
+    <Card className="professional-card h-full group hover:scale-[1.02] transition-all duration-300">
+      <CardContent className="p-6">
+        <div className="flex items-start gap-4 mb-4">
+          <div className="w-12 h-12 flex-shrink-0 rounded-lg bg-slate-800/50 border border-slate-700/50 flex items-center justify-center group-hover:border-blue-500/50 transition-colors">
             {!showFallback && iconUrl ? (
               <img 
                 src={iconUrl} 
                 alt={title} 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                className="w-full h-full object-cover rounded-lg"
                 onError={() => setShowFallback(true)}
               />
             ) : (
@@ -49,24 +48,21 @@ const ProjectCard = ({ title, description, iconUrl, tags, link, githubLink }: Pr
             )}
           </div>
           
-          <div className="flex-grow">
-            <div className="flex items-center justify-between">
-              <h3 className="font-bold text-xl text-magic-teal group-hover:text-magic-starlight transition-colors">
+          <div className="flex-grow min-w-0">
+            <div className="flex items-start justify-between gap-2 mb-2">
+              <h3 className="font-display font-semibold text-lg text-slate-50 group-hover:text-blue-400 transition-colors">
                 {title}
-                <span className="inline-block ml-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Sparkles className="h-4 w-4 text-magic-spark" />
-                </span>
               </h3>
-              <div className="flex gap-2">
+              <div className="flex gap-2 flex-shrink-0">
                 {link && (
                   <a 
                     href={link} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="text-magic-violet hover:text-magic-teal transition-colors"
+                    className="text-slate-500 hover:text-blue-400 transition-colors"
                     aria-label={`Visit ${title} website`}
                   >
-                    <ExternalLink className="h-5 w-5" />
+                    <ExternalLink className="h-4 w-4" />
                   </a>
                 )}
                 {githubLink && (
@@ -74,23 +70,28 @@ const ProjectCard = ({ title, description, iconUrl, tags, link, githubLink }: Pr
                     href={githubLink} 
                     target="_blank" 
                     rel="noopener noreferrer" 
-                    className="text-magic-violet hover:text-magic-teal transition-colors"
+                    className="text-slate-500 hover:text-blue-400 transition-colors"
                     aria-label={`View ${title} on GitHub`}
                   >
-                    <Github className="h-5 w-5" />
+                    <Github className="h-4 w-4" />
                   </a>
                 )}
               </div>
             </div>
-            <p className="text-magic-twilight mt-2 mb-4">{description}</p>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag, index) => (
-                <Badge key={index} className="bg-magic-deepPurple text-magic-twilight hover:bg-magic-violet/30 transition-colors border border-magic-violet/20">
-                  {tag}
-                </Badge>
-              ))}
-            </div>
           </div>
+        </div>
+        
+        <p className="text-slate-400 text-sm mb-4 leading-relaxed">{description}</p>
+        
+        <div className="flex flex-wrap gap-2">
+          {tags.map((tag, index) => (
+            <Badge 
+              key={index} 
+              className="bg-slate-800/50 text-slate-300 hover:bg-slate-800 border border-slate-700/50 text-xs font-normal px-2.5 py-0.5"
+            >
+              {tag}
+            </Badge>
+          ))}
         </div>
       </CardContent>
     </Card>
@@ -102,7 +103,6 @@ const Projects = () => {
     {
       title: "DialWorks",
       description: "Uber for sales reps, powered by WebSockets for real-time communication.",
-      // iconUrl: "/project-dialworks.png",
       tags: [
         "WebSockets", 
         "Express.js",
@@ -119,7 +119,6 @@ const Projects = () => {
     {
       title: "TEJAS",
       description: "Bi-directional sync system using Kafka, Redis, MySQL for seamless data flow.",
-      // iconUrl: "/project-tejas.png",
       tags: [
         "Apache Kafka", 
         "Redis", 
@@ -135,7 +134,6 @@ const Projects = () => {
     {
       title: "Cure.link",
       description: "Healthcare comms infrastructure with reliable async backend processing.",
-      // iconUrl: "/project-curelink.png",
       tags: [
         "Node.js",
         "TypeScript",
@@ -151,7 +149,6 @@ const Projects = () => {
     {
       title: "Omni-Social",
       description: "Node.js dashboard integrating all social platforms into one unified interface.",
-      // iconUrl: "/project-omnisocial.png",
       tags: [
         "React",
         "TypeScript",
@@ -167,7 +164,6 @@ const Projects = () => {
     {
       title: "Propel",
       description: "Clean scalable SaaS backend architecture designed for growth and flexibility.",
-      // iconUrl: "/project-propel.png",
       tags: [
         "Node.js",
         "TypeScript",
@@ -195,39 +191,24 @@ const Projects = () => {
       ],
       link: "https://www.npmjs.com/package/firefly-react",
       githubLink: "https://github.com/yourusername/firefly-react"
-    },
-    {
-      title: "GSoC @ Google",
-      description: "Contributed to p5.sound with ES Module migration, test automation, and audio engine upgrade.",
-      iconUrl: "/project-gsoc.png",
-      tags: [
-        "JavaScript",
-        "Web Audio API",
-        "ECMAScript Modules",
-        "GitHub Actions",
-        "HeadLess Testing using karma.js",
-        "Open Source"
-      ],
-      link: "https://p5js.org/reference/#/libraries/p5.sound",
-      githubLink: "https://github.com/processing/p5.js-sound"
     }
   ];
 
   return (
-    <section id="projects" className="py-24 px-4 bg-magic-deepPurple/20 relative backdrop-blur-sm">
-      <div className="absolute inset-0 bg-shimmer bg-200% opacity-10 animate-shimmer"></div>
-      <div className="container mx-auto max-w-6xl relative z-10">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 cosmic-glow">Projects</h2>
-          <p className="text-magic-twilight max-w-2xl mx-auto">
-            Each project is a journey into a unique world, built with care and technical excellence.
+    <section id="projects" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-slate-950">
+      <div className="container mx-auto max-w-6xl">
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="section-title">Projects</h2>
+          <p className="section-subtitle">
+            Each project represents a journey into solving real-world problems with technical excellence and attention to detail.
           </p>
-          <div className="w-24 h-1 bg-magic-teal mx-auto rounded-full mt-4"></div>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {projects.map((project, index) => (
-            <ProjectCard key={index} {...project} />
+            <div key={index} className="animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
+              <ProjectCard {...project} />
+            </div>
           ))}
         </div>
       </div>

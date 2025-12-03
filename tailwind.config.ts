@@ -120,8 +120,7 @@ export default {
 			},
 			fontFamily: {
 				sans: ['Inter', 'sans-serif'],
-				serif: ['Playfair Display', 'serif'],
-				handwritten: ['Caveat', 'cursive']
+				display: ['Space Grotesk', 'sans-serif'],
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
@@ -189,9 +188,9 @@ export default {
 				'twilight-card': 'linear-gradient(to bottom right, rgba(255, 255, 255, 0.1), rgba(155, 135, 245, 0.05))',
 				'festive-gradient': 'linear-gradient(135deg, #1F1D12, #372718)',
 				'lantern-glow': 'radial-gradient(circle, rgba(255,167,38,0.4) 0%, rgba(255,167,38,0) 70%)',
-				'professional-gradient': 'linear-gradient(135deg, #1E293B, #0F172A)',
-				'professional-card': 'linear-gradient(to bottom right, rgba(255, 255, 255, 0.05), rgba(99, 102, 241, 0.05))',
-				'professional-glow': 'radial-gradient(circle, rgba(56, 189, 248, 0.3) 0%, rgba(56, 189, 248, 0) 70%)'
+				'professional-gradient': 'linear-gradient(135deg, #0f172a, #1e293b)',
+				'professional-card': 'linear-gradient(to bottom right, rgba(255, 255, 255, 0.03), rgba(59, 130, 246, 0.05))',
+				'professional-glow': 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0) 70%)'
 			}
 		}
 	},

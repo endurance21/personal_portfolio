@@ -1,30 +1,43 @@
 import React from 'react';
-import { Sparkles } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="py-8 px-4 border-t border-magic-twilight/20 bg-magic-navy/40 backdrop-blur-sm">
+    <footer className="py-8 px-4 sm:px-6 lg:px-8 border-t border-slate-800 bg-slate-950">
       <div className="container mx-auto max-w-6xl">
         <div className="flex flex-col md:flex-row justify-between items-center gap-4">
           <div className="text-center md:text-left">
-            <h3 className="font-handwritten text-2xl text-magic-teal mb-1 group inline-flex items-center">
+            <h3 className="font-display text-xl sm:text-2xl font-bold text-slate-50 mb-1">
               Divyanshu
-              <Sparkles className="ml-1 h-4 w-4 text-magic-spark opacity-70" />
             </h3>
-            <p className="text-sm text-magic-twilight/70">
-              Software craftsman building magical digital experiences
+            <p className="text-sm text-slate-500">
+              Full Stack Software Developer
             </p>
           </div>
           
-          <div className="flex gap-8">
-            <a href="#" className="text-magic-twilight hover:text-magic-teal transition-colors">Home</a>
-            <a href="#" className="text-magic-twilight hover:text-magic-teal transition-colors">Projects</a>
-            <a href="#" className="text-magic-twilight hover:text-magic-teal transition-colors">Contact</a>
+          <div className="flex gap-6 sm:gap-8">
+            <button 
+              onClick={() => {
+                const element = document.getElementById('projects');
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="text-slate-500 hover:text-slate-50 transition-colors text-sm font-medium"
+            >
+              Projects
+            </button>
+            <button 
+              onClick={() => {
+                const element = document.getElementById('contact');
+                element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              }}
+              className="text-slate-500 hover:text-slate-50 transition-colors text-sm font-medium"
+            >
+              Contact
+            </button>
           </div>
         </div>
         
-        <div className="mt-8 pt-4 border-t border-magic-twilight/20 text-center text-sm text-magic-twilight/60">
-          <p>© {new Date().getFullYear()} Divyanshu. All rights reserved.</p>
+        <div className="mt-8 pt-6 border-t border-slate-800 text-center text-sm text-slate-600">
+          <p>© {new Date().getFullYear()} Divyanshu Raj. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -18,13 +18,10 @@ const getInitials = (name: string) => {
 
 const getGradientColor = (name: string) => {
   const colors = [
-    ['#FF6B6B', '#FF8E8E'],
-    ['#4ECDC4', '#45B7AF'],
-    ['#45B7D1', '#3CA3BC'],
-    ['#96CEB4', '#88BBA3'],
-    ['#FFEEAD', '#E6D79E'],
-    ['#D4A5A5', '#C09595'],
-    ['#9B59B6', '#8C4AA5']
+    ['#3B82F6', '#2563EB'],
+    ['#10B981', '#059669'],
+    ['#8B5CF6', '#7C3AED'],
+    ['#F59E0B', '#D97706'],
   ];
   const index = name.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   return colors[index % colors.length];
@@ -40,11 +37,11 @@ const TestimonialCard = ({ name, role, company, companyIcon, testimonial, avatar
   const [gradientStart, gradientEnd] = getGradientColor(name);
 
   return (
-    <Card className="magic-card overflow-hidden h-full">
-      <CardContent className="p-6 flex flex-col h-full relative z-10">
+    <Card className="professional-card overflow-hidden h-full">
+      <CardContent className="p-6 flex flex-col h-full">
         <div className="flex items-start gap-4 mb-4">
           <div 
-            className="w-16 h-16 rounded-full overflow-hidden border-2 border-magic-spark shadow-md flex items-center justify-center flex-shrink-0"
+            className="w-12 h-12 rounded-full overflow-hidden border-2 border-slate-700 flex items-center justify-center flex-shrink-0"
             style={{
               background: `linear-gradient(135deg, ${gradientStart}, ${gradientEnd})`,
             }}
@@ -61,42 +58,42 @@ const TestimonialCard = ({ name, role, company, companyIcon, testimonial, avatar
                 }}
               />
             ) : null}
-            <span className="text-2xl font-bold text-white tracking-tight">
+            <span className="text-lg font-bold text-white tracking-tight">
               {initials}
             </span>
           </div>
-          <div className="flex-grow">
-            <h3 className="font-bold text-lg text-magic-starlight">{name}</h3>
-            <p className="text-sm text-magic-twilight">{role}</p>
-            <div className="flex items-center gap-2 mt-1">
+          <div className="flex-grow min-w-0">
+            <h3 className="font-display font-semibold text-base text-slate-50 mb-1">{name}</h3>
+            <p className="text-sm text-slate-400 mb-1">{role}</p>
+            <div className="flex items-center gap-2 mb-2">
               {companyIcon && (
                 <img 
                   src={companyIcon} 
                   alt={company} 
-                  className="h-6 w-6 object-contain opacity-90"
+                  className="h-5 w-5 object-contain opacity-90"
                 />
               )}
-              <p className="text-xs text-magic-twilight/70">{company}</p>
+              <p className="text-xs text-slate-500">{company}</p>
             </div>
-            <div className="flex items-center gap-1 mt-2">
+            <div className="flex items-center gap-1">
               {[...Array(5)].map((_, i) => (
                 <Star 
                   key={i} 
-                  className={`w-4 h-4 ${i < (rating || 5) ? 'fill-yellow-400 text-yellow-400' : 'text-gray-400'}`} 
+                  className={`w-3.5 h-3.5 ${i < (rating || 5) ? 'fill-yellow-400 text-yellow-400' : 'text-slate-600'}`} 
                 />
               ))}
               {platform && (
-                <span className="text-xs text-magic-twilight/70 ml-1">• {platform}</span>
+                <span className="text-xs text-slate-500 ml-1">• {platform}</span>
               )}
             </div>
           </div>
         </div>
         
-        <Separator className="bg-magic-twilight/20 my-3" />
+        <Separator className="bg-slate-800 my-4" />
         
-        <div className="relative">
-          <QuoteIcon className="h-8 w-8 text-magic-twilight/10 absolute -top-1 -left-1" />
-          <p className="italic text-magic-twilight flex-grow pt-2 pl-3">{testimonial}</p>
+        <div className="relative flex-grow">
+          <QuoteIcon className="h-6 w-6 text-slate-800 absolute -top-1 -left-1" />
+          <p className="text-sm text-slate-300 leading-relaxed pt-2 pl-3 italic">{testimonial}</p>
         </div>
       </CardContent>
     </Card>
@@ -144,16 +141,18 @@ const Testimonials = () => {
   ];
 
   return (
-    <section id="testimonials" className="py-24 px-4">
+    <section id="testimonials" className="py-16 sm:py-20 md:py-24 px-4 sm:px-6 lg:px-8 bg-slate-950">
       <div className="container mx-auto max-w-6xl">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 cosmic-glow">What Clients Say</h2>
-          <div className="w-24 h-1 bg-magic-spark mx-auto rounded-full"></div>
+        <div className="text-center mb-12 sm:mb-16">
+          <h2 className="section-title">What Clients Say</h2>
+          <p className="section-subtitle">
+            Trusted by founders and engineers to deliver exceptional results
+          </p>
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {testimonials.map((testimonial, index) => (
-            <div key={index} className="transform hover:-translate-y-2 transition-transform duration-300">
+            <div key={index} className="animate-slide-up" style={{ animationDelay: `${index * 0.1}s` }}>
               <TestimonialCard {...testimonial} />
             </div>
           ))}

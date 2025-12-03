@@ -1,43 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowDownCircle, Sparkles, ExternalLink, LampCeiling } from 'lucide-react';
-
-const roles = [
-  {
-    title: "GSoC Fellow",
-    description: "Open source contributor at Google Summer of Code",
-    logo: "/google_white_bg.svg",
-    color: "bg-white"
-  },
-  {
-    title: "Freelance Developer",
-    description: "Crafting custom solutions for clients",
-    logo: "/freelance_dp.png",
-    color: "bg-white"
-  }
-];
+import { ArrowDownCircle, ExternalLink, Mail } from 'lucide-react';
 
 const HeroSection = () => {
-  const [activeRole, setActiveRole] = useState(0);
-
   useEffect(() => {
-    document.title = "Full Stack Software Developer";
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveRole((prev) => (prev + 1) % roles.length);
-    }, 1700);
-    return () => clearInterval(interval);
+    document.title = "Divyanshu Raj - Full Stack Software Developer";
   }, []);
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      const offset = 80; // Adjust this value to account for navbar height
+      const offset = 80;
       const elementPosition = element.getBoundingClientRect().top;
       const offsetPosition = elementPosition + window.pageYOffset - offset;
-
       window.scrollTo({
         top: offsetPosition,
         behavior: 'smooth'
@@ -46,99 +21,86 @@ const HeroSection = () => {
   };
 
   return (
-    <div className="relative min-h-screen flex flex-col justify-center items-center px-4 overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none opacity-20">
-        {/* Background elements */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-indigo-400 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-indigo-700 rounded-full blur-3xl transform -translate-x-1/2 translate-y-1/2"></div>
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 bg-blue-400 rounded-full blur-3xl opacity-40"></div>
+    <div className="relative min-h-screen flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 pt-20 pb-16 overflow-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 opacity-[0.03]">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-indigo-500 rounded-full blur-3xl"></div>
       </div>
       
-      <div className="container max-w-5xl mx-auto z-10">
-        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-          <div className="w-full lg:w-1/2 order-2 lg:order-1">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 animate-fade-in cosmic-glow">
-              Hi, I'm <span className="text-indigo-400">Divyanshu</span>
-            </h1>
-            
-            <div className="h-32 sm:h-28 mb-6 overflow-hidden relative">
-              {roles.map((role, index) => (
-                <div 
-                  key={index}
-                  className={`absolute w-full transition-all duration-500 ease-in-out ${
-                    index === activeRole 
-                      ? "top-0 opacity-100" 
-                      : "top-24 opacity-0"
-                  }`}
-                >
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className={`w-12 h-12 rounded-lg ${role.color} flex items-center justify-center p-2 shadow-lg`}>
-                      <img 
-                        src={role.logo} 
-                        alt={role.title} 
-                        className="max-w-full max-h-full object-contain" 
-                      />
-                    </div>
-                    <h2 className="text-2xl md:text-3xl font-bold text-white">{role.title}</h2>
-                  </div>
-                  <p className="text-lg text-indigo-50/90">{role.description}</p>
-                </div>
-              ))}
+      <div className="container max-w-6xl mx-auto z-10 w-full">
+        <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16">
+          {/* Content */}
+          <div className="w-full lg:w-1/2 text-center lg:text-left animate-fade-in">
+            <div className="inline-block mb-4 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20">
+              <span className="text-sm font-medium text-blue-400">Full Stack Developer</span>
             </div>
             
-            <p className="text-lg md:text-xl text-indigo-50/90 mb-8">
-            Full-stack developer specializing in MERN and Java Spring Boot. I turn your ideas into scalable, production-ready applications. Fast delivery, clean code, and ongoing support—your success is my priority.
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-bold leading-tight mb-6 text-slate-50">
+              Hi, I'm <span className="text-blue-400">Divyanshu</span>
+            </h1>
+            
+            <div className="mb-6">
+              <div className="flex items-center gap-3 mb-2 justify-center lg:justify-start">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg bg-white/5 border border-slate-800 flex items-center justify-center p-2">
+                  <img 
+                    src="/freelance_dp.png" 
+                    alt="Freelance Developer" 
+                    className="max-w-full max-h-full object-contain" 
+                  />
+                </div>
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-semibold text-slate-50">Freelance Developer</h2>
+              </div>
+              <p className="text-base sm:text-lg text-slate-400">Crafting custom solutions for clients</p>
+            </div>
+            
+            <p className="text-base sm:text-lg md:text-xl text-slate-400 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+              Full-stack developer specializing in MERN and Java Spring Boot. I turn your ideas into scalable, production-ready applications. Fast delivery, clean code, and ongoing support—your success is my priority.
             </p>
             
-            <div className="flex flex-col sm:flex-row gap-4">
+            <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Button 
                 onClick={() => scrollToSection('projects')}
-                className="bg-indigo-600 hover:bg-indigo-700 text-white border border-indigo-500/20 shadow-lg group"
+                className="bg-blue-600 hover:bg-blue-700 text-white border-0 shadow-lg hover:shadow-xl transition-all h-12 px-6 text-base font-medium"
               >
                 View Projects
-                <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                <ExternalLink className="ml-2 h-4 w-4" />
               </Button>
               
               <Button 
                 onClick={() => scrollToSection('contact')}
                 variant="outline" 
-                className="bg-transparent border border-indigo-300/30 text-indigo-50 hover:bg-indigo-500/20 shadow-md"
+                className="bg-transparent border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-slate-50 hover:border-slate-600 h-12 px-6 text-base font-medium"
               >
+                <Mail className="mr-2 h-4 w-4" />
                 Contact Me
               </Button>
             </div>
           </div>
           
-          <div className="hidden sm:w-full sm:flex lg:w-1/2 order-1 lg:order-2 justify-center">
-            <div className="relative w-full">
-              <div className="absolute inset-0 bg-indigo-400/10 rounded-full blur-3xl transform scale-75"></div>
+          {/* Image */}
+          <div className="w-full lg:w-1/2 flex justify-center order-first lg:order-last">
+            <div className="relative w-full max-w-md">
+              <div className="absolute inset-0 bg-blue-500/10 rounded-2xl blur-2xl transform scale-90"></div>
               <img 
                 src="/hero_illustration.svg" 
-                alt="Studio Ghibli style developer in a magical workspace" 
-                className="relative z-10 w-full max-w-md mx-auto animate-float shadow-professional rounded-full"
+                alt="Developer illustration" 
+                className="relative z-10 w-full rounded-2xl"
               />
-              <div className="absolute top-0 right-0 w-8 h-8 text-blue-400 animate-twinkle">
-                <Sparkles className="w-full h-full" />
-              </div>
-              <div className="absolute bottom-1/4 left-0 w-6 h-6 text-indigo-400 animate-twinkle" style={{ animationDelay: '1s' }}>
-                <Sparkles className="w-full h-full" />
-              </div>
-              <div className="absolute top-1/3 right-1/4 w-5 h-5 text-white animate-twinkle" style={{ animationDelay: '2s' }}>
-                <LampCeiling className="w-full h-full" />
-              </div>
             </div>
           </div>
         </div>
       </div>
       
+      {/* Scroll indicator */}
       <button
         onClick={() => scrollToSection('top-skills')}
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer z-30 group"
-        aria-label="Scroll to top skills section"
+        aria-label="Scroll to skills section"
       >
         <div className="relative">
-          <div className="absolute inset-0 bg-indigo-400/20 rounded-full blur-xl group-hover:bg-indigo-400/30 transition-all"></div>
-          <ArrowDownCircle className="h-10 w-10 md:h-16 md:w-16 text-indigo-400 group-hover:text-indigo-300 transition-colors relative z-10 drop-shadow-lg" strokeWidth={2} />
+          <div className="absolute inset-0 bg-blue-500/10 rounded-full blur-lg group-hover:bg-blue-500/20 transition-all"></div>
+          <ArrowDownCircle className="h-10 w-10 sm:h-12 sm:w-12 text-slate-400 group-hover:text-blue-400 transition-colors relative z-10" strokeWidth={1.5} />
         </div>
       </button>
     </div>

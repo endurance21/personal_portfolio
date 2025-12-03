@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sparkles } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 const Navbar = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -22,62 +22,63 @@ const Navbar = () => {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId);
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const offset = 80;
+      const elementPosition = element.getBoundingClientRect().top;
+      const offsetPosition = elementPosition + window.pageYOffset - offset;
+      window.scrollTo({
+        top: offsetPosition,
+        behavior: 'smooth'
+      });
       setMobileMenuOpen(false);
     }
   };
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'py-3 bg-magic-navy/80 backdrop-blur-md shadow-sm border-b border-magic-twilight/20' : 'py-5 bg-transparent'
+      isScrolled 
+        ? 'py-3 bg-slate-950/95 backdrop-blur-md shadow-lg border-b border-slate-800/50' 
+        : 'py-4 bg-slate-950/80 backdrop-blur-sm'
     }`}>
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <nav className="flex justify-between items-center">
-          <a 
-            href="#" 
-            className="font-handwritten text-2xl text-magic-teal font-bold group"
-            onClick={(e) => {
-              e.preventDefault();
-              window.scrollTo({ top: 0, behavior: 'smooth' });
-            }}
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="font-display text-xl sm:text-2xl font-bold text-slate-50 hover:text-blue-400 transition-colors"
           >
-            <span className="inline-flex items-center">
-              Divyanshu
-              <Sparkles className="h-4 w-4 ml-1 text-magic-spark opacity-70 group-hover:animate-twinkle" />
-            </span>
-          </a>
+            Divyanshu
+          </button>
           
           <div className="hidden md:flex items-center gap-8">
             <button 
               onClick={() => scrollToSection('projects')}
-              className="text-magic-twilight hover:text-magic-teal transition-colors"
+              className="text-slate-400 hover:text-slate-50 transition-colors text-sm font-medium"
             >
               Projects
             </button>
             <button 
               onClick={() => scrollToSection('testimonials')}
-              className="text-magic-twilight hover:text-magic-teal transition-colors"
+              className="text-slate-400 hover:text-slate-50 transition-colors text-sm font-medium"
             >
               Testimonials
             </button>
             <button 
               onClick={() => scrollToSection('work-with-me')}
-              className="text-magic-twilight hover:text-magic-teal transition-colors"
+              className="text-slate-400 hover:text-slate-50 transition-colors text-sm font-medium"
             >
-              Why me ?
+              About
             </button>
             <Button 
-              className="magic-button text-sm py-2 flex items-center gap-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-5 py-2 h-auto"
               onClick={() => scrollToSection('contact')}
             >
-              <span>Contact Me</span>
-              <Sparkles className="h-3 w-3 animate-twinkle" />
+              Contact
             </Button>
           </div>
           
           <button 
-            className="md:hidden text-magic-twilight"
+            className="md:hidden text-slate-400 hover:text-slate-50 transition-colors"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            aria-label="Toggle menu"
           >
             {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
@@ -85,31 +86,31 @@ const Navbar = () => {
       </div>
       
       {mobileMenuOpen && (
-        <div className="md:hidden bg-magic-navy/95 backdrop-blur-lg shadow-lg py-4 px-4 absolute top-full left-0 right-0 border-t border-magic-twilight/20">
-          <div className="flex flex-col space-y-4">
+        <div className="md:hidden bg-slate-950/98 backdrop-blur-lg border-t border-slate-800/50 py-4 px-4">
+          <div className="flex flex-col space-y-3">
             <button 
               onClick={() => scrollToSection('projects')}
-              className="text-magic-twilight hover:text-magic-teal transition-colors py-2"
+              className="text-slate-400 hover:text-slate-50 transition-colors py-2 text-left text-sm font-medium"
             >
               Projects
             </button>
             <button 
               onClick={() => scrollToSection('testimonials')}
-              className="text-magic-twilight hover:text-magic-teal transition-colors py-2"
+              className="text-slate-400 hover:text-slate-50 transition-colors py-2 text-left text-sm font-medium"
             >
               Testimonials
             </button>
             <button 
               onClick={() => scrollToSection('work-with-me')}
-              className="text-magic-twilight hover:text-magic-teal transition-colors py-2"
+              className="text-slate-400 hover:text-slate-50 transition-colors py-2 text-left text-sm font-medium"
             >
-              About Me
+              About
             </button>
             <Button 
-              className="magic-button justify-center"
+              className="bg-blue-600 hover:bg-blue-700 text-white justify-center mt-2"
               onClick={() => scrollToSection('contact')}
             >
-              Contact Me
+              Contact
             </Button>
           </div>
         </div>
